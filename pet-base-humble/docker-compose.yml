@@ -1,5 +1,8 @@
-# Launch with: $ docker compose up -d
-# Connect shell by: $ docker exec -it pet-base-humble_container_container bash
+# Launch with: 
+# $ docker compose up -d
+
+# Connect shell by: 
+# $ docker exec -it pet-base-humble_container_container bash
 version: "3"
 services:
   ros2:
@@ -22,7 +25,7 @@ services:
     tty: true        # docker run -t
     # restart: always
     # restart: unless-stopped
-    # command: [ "ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]
+    # command: [...stuff...]
 
 networks:
   hostnet:

@@ -1,21 +1,26 @@
-# Base layer for 
-# 1) Base Docker Image ROS2 Humble ARM64
-# 2) Create Docker user "pet" with access to USB, I2C and GPIO
-# 3) Add "apt" package
-# 4) Add "pip3" package
-
-# Docker Build image with:
+# Dockerfile: Base layer for ROS2/Humble running on Raspberry PI
+# - ROS Version: ROS2/Humble(arm64)
+# - OS version: Ubuntu 22.04
 #----------------------
-# docker build -t pet-base-humble .
-#----------------------
-#
-# Docker Launch image with:
-#----------------------
-# $ docker run -it --rm --network=host --privileged pet-base-humble
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
 #----------------------
 
+# Build Docker image with:
+#----------------------
+# $ docker build -t kullken/ros2_arm64v8:pet-base-humble .
+#----------------------
+
+# Launch Docker image with:
+#----------------------
+# $ docker run -it --rm --network=host --privileged kullken/ros2_arm64v8:pet-base-humble
+#----------------------
+
+# Some usefull links...
 # https://hub.docker.com/r/arm64v8/ros/tags
 # https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+# https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 FROM arm64v8/ros:humble-ros-base-jammy
 
 ENV DOCKERUSER="pet"
@@ -54,7 +59,7 @@ RUN echo "${DOCKERUSER}:d0cker" | chpasswd
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 
-RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> /home/pet/.bashrc 
+RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc 
 
 # Install required software i2c
 USER root
@@ -87,8 +92,8 @@ RUN pip3 install \
 #RUN echo deb [arch=arm64 signed-by=/usr/share/keyrings/vscode.gpg] https://packages.microsoft.com/repos/vscode stable main | tee /etc/apt/sources.list.d/vscode.list
 #RUN apt update -y && apt install -y code
 USER ${DOCKERUSER}
-RUN echo "alias humble='source /opt/ros/humble/setup.bash'" >> /home/pet/.bashrc
-RUN echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'" >> /home/pet/.bashrc
+RUN echo "alias humble='source /opt/ros/humble/setup.bash'" >> ${HOMEDIR}/.bashrc
+RUN echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'" >> ${HOMEDIR}/.bashrc
 
 # Setup exit condtions
 CMD ["/bin/bash"]

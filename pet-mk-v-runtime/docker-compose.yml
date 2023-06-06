@@ -1,5 +1,9 @@
-# Launch with: $ docker compose up -d
-# Launch in background with: $ docker compose up -d
+# Launch with: 
+# $ docker compose up -d
+
+# Connect shell/bash by: 
+# $ docker exec -it pet-mk-v-runtime_container bash
+
 version: "3"
 services:
   ros2:

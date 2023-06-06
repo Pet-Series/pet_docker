@@ -1,5 +1,8 @@
-# Launch with: $ docker compose up -d
-# Connect shell by: $ docker exec -it pet-mk-viii-runtime_container bash
+# Launch with: 
+# $ docker compose up -d
+
+# Connect shell/bash by: 
+# $ docker exec -it pet-mk-viii-runtime_container bash
 version: "3"
 services:
   ros2:

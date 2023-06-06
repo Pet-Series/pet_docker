@@ -1,16 +1,36 @@
-# docker build -t pet-mk-v .
-#
-# Launch image with:
+# Dockerfile: Target HW/Platform Pet-Mk-V (Five)
+# - ROS Version: ROS2/Humble(arm64)
+# - OS version: Ubuntu 22.04
 #----------------------
-# docker run -it \
-#  --rm \
-#  --network=host \
-#  --privileged \
-#  --volume="/home/pi/ws_ros2:/home/pet/ws_ros2:rw" \
-# pet-mk-v
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#----------------------
+
+# Build Docker image with:
+#----------------------
+# $ docker build --tag kullken/ros2_arm64v8:pet-mk-v-runtime .
+#----------------------
+
+# Launch Docker image with:
+#----------------------
+# $ docker run \
+#   -it \
+#   --rm \
+#   --network=host \
+#   --privileged \
+#   --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
+#   kullken/ros2_arm64v8:pet-mk-v-runtime
+
 #----------------------
 # Prerequisit: Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git
 #
+
+# Some usefull links...
+# https://hub.docker.com/r/arm64v8/ros/tags
+# https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+# https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+
 FROM  kullken/ros2_arm64v8:pet-base-humble 
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
