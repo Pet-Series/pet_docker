@@ -2,7 +2,7 @@
 # $ docker compose up -d
 
 # Connect shell by: 
-# $ docker exec -it pet-base-humble_container_container bash
+# $ docker exec -it pet-base-humble_container bash
 version: "3"
 services:
   ros2:
