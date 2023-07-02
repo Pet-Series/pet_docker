@@ -51,12 +51,11 @@ RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${
 RUN echo 'source ${HOMEDIR}/ws_ros2/install/setup.bash' >> ${HOMEDIR}/.bashrc 
 
 # Put the entrypoint.sh script in the right place...
-RUN mkdir --parent    ${HOMEDIR}/ws_ros2/src/Pet-Mk-VIII/docker/pet-mk-v-runtime/entrypoint.sh
-COPY ./entrypoint.sh  ${HOMEDIR}/ws_ros2/src/Pet-Mk-VIII/docker/pet-mk-v-runtime/entrypoint.sh
+COPY ./entrypoint.sh ${HOMEDIR}/entrypoint.sh
 USER root
-RUN chmod +x          ${HOMEDIR}/ws_ros2/src/Pet-Mk-VIII/docker/pet-mk-v-runtime/entrypoint.sh
+RUN chmod +x         ${HOMEDIR}/entrypoint.sh
 USER ${DOCKERUSER}
 
 # As default - Bring Bash-shell
 CMD ["/bin/bash"]
-ENTRYPOINT ["/home/pet/ws_ros2/src/Pet-Mk-VIII/docker/pet-mk-v-runtime/entrypoint.sh"]
+ENTRYPOINT ["/home/pet/entrypoint.sh"]
