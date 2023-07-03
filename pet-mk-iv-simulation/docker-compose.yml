@@ -1,8 +1,13 @@
-# Launch with: 
+# Launch [Builds, (re)creates, starts] with: 
+# $ docker compose build
+# $ docker compose build --no-cache
 # $ docker compose up -d
 
 # Connect shell/bash by: 
 # $ docker exec -it pet-mk-iv-simulation_container bash
+
+# Remove
+# $ docker compose down
 
 version: "3"
 services:
@@ -10,7 +15,10 @@ services:
     image: kullken/ros1_amd64:pet-mk-iv-simulation
     container_name: pet-mk-iv-simulation_container
     labels:
-      - se.pet-series.description: "ROS1 Noetic for Pet-Mk.IV"
+      - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV(label)"
+    deploy:
+      labels:
+        - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV(service)"
     build: .
     environment:
       - DISPLAY=${DISPLAY}
