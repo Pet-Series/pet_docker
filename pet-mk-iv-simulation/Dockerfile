@@ -38,7 +38,7 @@ LABEL version="1.0"
 
 SHELL ["/bin/bash", "-c"]
 
-# Setup Docker user "pet" for access to Sudo
+# Setup Docker user "pet" for access to Sudo etc.
 RUN groupadd --force --gid  20 dialout &&\
     groupadd --force --gid  27 sudo &&\
     groupadd --force --gid  44 video
@@ -55,7 +55,7 @@ RUN useradd \
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 
-# Install git, python3/pip and catkin
+# Install git, python3/pip and catkin (so that we can build ROS1 workspaces)
 USER root
 RUN apt-get update &&\
     apt-get install -y git &&\
@@ -66,8 +66,9 @@ RUN apt-get update &&\
     apt-get install -y python3-catkin-tools &&\
     rm -rf /var/lib/apt/lists/*
 RUN pip3 install osrf-pycommon
-#RUN ln -sf /user/bin/python `which python3.8`
-#    ln -s /usr/bin/python3.8 /usr/bin/python
+
+# Lets make a Python/Python2 name-compatible executable of Python3
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
 
 # Install Neofetch (not neccesary but fancy :-)
 RUN sudo apt update -y &&\
@@ -80,7 +81,7 @@ USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 RUN mkdir -p ~/ws_ros1/src 
 
-# Clone git-repositories
+# Clone git-repositories into the ROS1 workspace
 WORKDIR ${HOMEDIR}/ws_ros1/src
 RUN git clone https://github.com/Pet-Series/Pet-Mk-IV.git &&\
     git clone https://github.com/Pet-Series/pet_mk_iv_simulation.git
@@ -98,6 +99,7 @@ RUN source /opt/ros/noetic/setup.bash &&\
 RUN mkdir ${HOMEDIR}/.gazebo
 COPY gui.ini ${HOMEDIR}/.gazebo/gui.ini
 
+# Adding stuff to >> $~/.bashrc
 RUN echo '# Setting up my own fancy Terminal Prompt :-)' >> ${HOMEDIR}/.bashrc &&\
     echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc 
 
