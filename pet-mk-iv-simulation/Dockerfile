@@ -87,6 +87,8 @@ RUN mkdir -p ~/ws_ros1/src
 WORKDIR ${HOMEDIR}/ws_ros1/src
 RUN git clone https://github.com/Pet-Series/Pet-Mk-IV.git &&\
     git clone https://github.com/Pet-Series/pet_mk_iv_simulation.git
+WORKDIR ${HOMEDIR}/ws_ros1
+RUN catkin_make
 
 # Build the ROS1 workspace
 WORKDIR ${HOMEDIR}/ws_ros1
