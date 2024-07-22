@@ -64,6 +64,8 @@ RUN apt-get update &&\
     apt-get install -y python3-rosinstall-generator &&\
     apt-get install -y python3-catkin-lint &&\
     apt-get install -y python3-catkin-tools &&\
+    apt-get install -y ros-noetic-teleop-twist-keyboard &&\
+    apt-get install -y ros-noetic-xacro &&\
     rm -rf /var/lib/apt/lists/*
 RUN pip3 install osrf-pycommon
 
