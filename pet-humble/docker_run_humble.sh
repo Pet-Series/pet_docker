@@ -1,5 +1,9 @@
 #!/bin/bash
 # Docker Run based on ROS2 Humble (ARM64v8 CPU Architecture)
+#
+# Links to source/original...
+# https://hub.docker.com/r/arm64v8/ros/tags
+# https://hub.docker.com/r/arm64v8/ros/tags?name=jazzy
 docker run -it \
  --rm \
  --network=host \
