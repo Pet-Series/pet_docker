@@ -1,0 +1,18 @@
+# ROS2 test/tutorial - Run two nodes in two separate docker containers
+#
+# 1) Launch the nodes
+#    $ docker compose up
+#    ...press <Ctrl><C> to stop
+#
+# More info: https://docs.ros.org/en/jazzy/How-To-Guides/Run-2-nodes-in-single-or-separate-docker-containers.html
+#
+services: 
+  talker: 
+    image: osrf/ros:jazzy-desktop 
+    command: ros2 run demo_nodes_cpp talker 
+
+  listener: 
+    image: osrf/ros:jazzy-desktop 
+    command: ros2 run demo_nodes_cpp listener
+    depends_on: 
+      - talker 
