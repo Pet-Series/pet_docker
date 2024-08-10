@@ -7,4 +7,4 @@
   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
   --volume="/etc/localtime:/etc/localtime:ro" \
   --network=host \
- kullken/ros2_amd64:jazzy-full
+  kullken/ros2_amd64:jazzy-full
