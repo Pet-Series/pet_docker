@@ -12,7 +12,6 @@
 #    docker compose --file docker-compose.yml down
 #
 # More info: 
-# More info: 
 #     - https://hub.docker.com/repositories/kullken
 #     - https://github.com/Pet-Series/pet_docker/tree/main/amd64-noetic
 #     - https://docs.ros.org/en/jazzy/How-To-Guides/Run-2-nodes-in-single-or-separate-docker-containers.html

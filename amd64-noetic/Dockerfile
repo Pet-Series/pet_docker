@@ -21,7 +21,7 @@
 #   kullken/ros1_amd64:noetic-full
 #----------------------
 
-# Some usefull links.: 
+# Some usefull links: 
 #     - https://hub.docker.com/repositories/kullken
 #     - https://github.com/Pet-Series/pet_docker/tree/main/amd64-noetic
 #     - https://hub.docker.com/r/osrf/ros/tags
