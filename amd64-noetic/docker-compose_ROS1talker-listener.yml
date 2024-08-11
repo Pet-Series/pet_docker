@@ -1,0 +1,71 @@
+# ROS1 test/tutorial - Pull down/Run/Launch two nodes in two separate docker containers.
+# Using the built in ros1 package 'roscpp_tutorials' with the two nodes 'talker' & 'listener'
+#
+# 1) Launch the nodes
+#    $ docker compose --file docker-compose_ROS1talker-listener.yml up
+#    ... ✔ Container amd64-noetic-bash-1 
+#    ... ✔ Container amd64-noetic-master-1 
+#    ... ✔ Container amd64-noetic-talker-1
+#    ... ✔ Container amd64-noetic-listener-1 
+#
+# 2)  Connect bash to existing/new container: 
+#     $ docker exec -it amd64-noetic-bash-1 bash
+#
+# 3)  # 2) ...press <Ctrl><C> to stop
+#
+# 3) Remove the three containers AND the Network
+#    docker compose --file docker-compose_ROS1talker-listener.yml down
+#
+# More info: 
+#     - https://hub.docker.com/repositories/kullken
+#     - https://github.com/Pet-Series/pet_docker/tree/main/amd64-noetic
+#     - https://github.com/ruffsl/ros_docker_demos/blob/master/multicontainer/README.md 
+#     - https://docs.ros.org/en/jazzy/How-To-Guides/Run-2-nodes-in-single-or-separate-docker-containers.html
+#     - https://hub.docker.com/_/ros
+#
+services: 
+  bash: 
+    build: ./
+    image: kullken/ros1_amd64:noetic-full
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+
+  master: 
+    build: ./
+    image: kullken/ros1_amd64:noetic-full
+    network_mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: roscore
+
+  listener: 
+    build: ./
+    image: kullken/ros1_amd64:noetic-full
+    network_mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: rosrun roscpp_tutorials listener
+    depends_on: 
+      - master 
+
+  talker: 
+    build: ./
+    image: kullken/ros1_amd64:noetic-full
+    network_mode: host
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: rosrun roscpp_tutorials talker
+    depends_on: 
+      - master

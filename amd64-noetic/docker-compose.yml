@@ -1,0 +1,36 @@
+# ROS1 test/tutorial - Pull down/Run/Launch two nodes in two separate docker containers.
+# Using the built in ros1 package 'roscpp_tutorials' with the two nodes 'talker' & 'listener'
+#
+# 1) Launch the nodes
+#    $ docker compose --file docker-compose.yml up --detach --build
+#    ... ✔ Container: noetic-full-bash-1
+#
+# 2)  Connect bash to existing/new container: 
+#     $ docker exec -it noetic-full-bash-1 bash
+#
+# 3) Remove the two containers AND the Network
+#    docker compose --file docker-compose.yml down
+#
+# More info: 
+# More info: 
+#     - https://hub.docker.com/repositories/kullken
+#     - https://github.com/Pet-Series/pet_docker/tree/main/amd64-noetic
+#     - https://docs.ros.org/en/jazzy/How-To-Guides/Run-2-nodes-in-single-or-separate-docker-containers.html
+#     - https://hub.docker.com/_/ros
+#
+services: 
+  bash: 
+    build: ./
+    image: kullken/ros1_amd64:noetic-full
+#    container_name: noetic-full-container
+    network_mode: host
+    environment:
+      # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
+      - DISPLAY=${DISPLAY}
+    volumes:
+      # Sync docker date, timezone with docker-host 
+      - /etc/localtime:/etc/localtime:ro
+      # Enable docker GUI-applications to access docker-host xhost screen.  
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
