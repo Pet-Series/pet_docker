@@ -18,13 +18,12 @@
 #----------------------
 
 # Links to source/original...
-# https://hub.docker.com/r/arm64v8/ros/tags
-# https://hub.docker.com/r/arm64v8/ros/tags?name=jazzy
-# https://hub.docker.com/r/osrf/ros/tags?name=jazzy
+# - https://hub.docker.com/r/osrf/ros/tags?name=jazzy
+#
 # Links to my custom content...
-# https://hub.docker.com/r/kullken/
-# https://hub.docker.com/repository/docker/kullken/ros2_amd64
-# https://github.com/Pet-Series/pet_docker
+# - https://hub.docker.com/r/kullken/
+# - https://hub.docker.com/repository/docker/kullken/ros2_amd64
+# - https://github.com/Pet-Series/pet_docker
 FROM osrf/ros:jazzy-desktop-full-noble
 
 ENV DOCKERUSER="ubuntu"
@@ -36,6 +35,9 @@ LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.0"
 
 SHELL ["/bin/bash", "-c"]
+
+USER root
+RUN echo "${DOCKERUSER}:D0cker" | chpasswd
 
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
