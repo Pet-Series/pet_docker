@@ -45,9 +45,9 @@ RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${
 
 # Install Neofetch
 USER root
-RUN apt update -y && apt -y install neofetch && echo 'neofetch' >> ${HOMEDIR}/.bashrc 
-##    && rm -rf /var/lib/apt/lists/*
-
+RUN apt update -y && apt -y install neofetch \ 
+    && rm -rf /var/lib/apt/lists/* \
+    && echo 'neofetch' >> ${HOMEDIR}/.bashrc 
 
 USER ${DOCKERUSER}
 RUN echo "source /opt/ros/jazzy/setup.bash" >> ${HOMEDIR}/.bashrc
