@@ -1,0 +1,23 @@
+# Launch a plain ROS2 Jazzy full desktop
+#
+# 1) Launch the node
+#    $ docker compose --file docker-compose_jazzy-desktop-full-noble.yml up --detach
+#
+# 2)  Connect bash to existing/new container: 
+#     $ docker exec -it jazzy-desktop-full-noble-container bash
+#
+services: 
+  bash: 
+    image: osrf/ros:jazzy-desktop-full-noble
+    container_name: jazzy-desktop-full-noble-container
+    network_mode: host
+    environment:
+      # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
+      - DISPLAY=${DISPLAY}
+    volumes:
+      # Sync docker date, timezone with docker-host 
+      - /etc/localtime:/etc/localtime:ro
+      # Enable docker GUI-applications to access docker-host xhost screen.  
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
