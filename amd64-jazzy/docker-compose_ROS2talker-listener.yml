@@ -1,0 +1,31 @@
+# ROS2 test/tutorial - Pull down/Run/Launch two nodes in two separate docker containers.
+# Using the built in ros2 package 'demo_nodes_cpp' with the two nodes 'talker' & 'listener'
+#
+# 1) Launch the nodes
+#    $ docker compose --file docker-compose_ROS2talker-listener.yml up
+#    ... ✔ Container1                                                                                                                                                                                          0.0s 
+#    ... ✔ Container2 
+#   
+# 2) ...press <Ctrl><C> to stop
+#
+# 3) Remove the two containers AND the Network "amd64-jazzy_default"
+#    $ docker compose --file docker-compose_ROS2talker-listener.yml down
+#
+# More info: 
+#     - https://docs.ros.org/en/jazzy/How-To-Guides/Run-2-nodes-in-single-or-separate-docker-containers.html
+#     - https://hub.docker.com/_/ros
+#
+services: 
+  talker: 
+    image: osrf/ros:jazzy-desktop
+    command: ros2 run demo_nodes_cpp talker 
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+
+  listener: 
+    image: osrf/ros:jazzy-desktop 
+    command: ros2 run demo_nodes_cpp listener
+    depends_on: 
+      - talker 
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
