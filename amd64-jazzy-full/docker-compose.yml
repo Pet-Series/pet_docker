@@ -1,7 +1,7 @@
 # ROS2 Developing conatiner that share /home/$USER/ws_ros2/*.* with docker-host filesystem.
 #
 # 1a) Create/Start Container from Image : 
-#     $ docker compose up -d
+#     $ docker compose up --detach
 # 1b) List running/active/paused
 #     $ docker compose ps -all
 #
@@ -20,22 +20,25 @@
 #----------------------
 services:
   ros2:
+    build: ./
     image: kullken/ros2_amd64:jazzy-full
     # Use/Reuse the same container name all the time
     container_name: jazzy-full-container
     network_mode: host
     environment:
-    # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
+      # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
       - DISPLAY=${DISPLAY}
-    # Other $ env to set/passtruth to the container 
+      # Other $ env to set/passtruth to the container 
       - KALLE=ANKA  
     volumes:
-    # Sync docker date, timezone with docker-host 
-    - /etc/localtime:/etc/localtime:ro
-    # Enable docker GUI-applications to access docker-host xhost screen.  
-    - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    # Mount the ROS2 Workspace directory from docker-host file system
-    - /home/$USER/ws_ros2:/home/ubuntu/ws_ros2:rw
-
+      # Sync docker date, timezone with docker-host 
+      - /etc/localtime:/etc/localtime:ro
+      # Enable docker GUI-applications to access docker-host xhost screen.  
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mount the ROS2 Workspace directory from docker-host file system
+      - /home/$USER/ws_ros2:/home/ubuntu/ws_ros2:rw
+      #??- /home/ubuntu/.ros/:/root/.ros/
+    devices:
+      - /dev/video0:/dev/video0     # USB/Web camera on my computer
     stdin_open: true # docker run -i
     tty: true        # docker run -t
