@@ -1,0 +1,56 @@
+# ROS2 Jazzy developing add-on-docker-layer.
+#
+#  *  Adding micro-ROS agent
+#  *  Adding Rasperry Pi Pico SDK
+#  *  Adding Resparry Pi Pico picotool
+#  *  Adding micro-ROS SDK
+#
+# Prerequisite - On docker host: 
+#      I)  That the ROS2 WorkSpace(folder) '/home/$USER/ws_ros2/'' exist before starting the Image/Containner.
+#      II) That '$ xhost local:docker' is run before container is started - To enable GUI/X11 applications inside container
+#
+# Commands:
+#   1a) Create/Start Container from Image : 
+#       $ docker compose up --detach --build
+#   1b) List running/active/paused
+#       $ docker compose ps -all
+#
+#   2)  Connect bash to existing/new container: 
+#       $ docker exec -it jazzy-full-pico-container bash
+#
+#   3)  Stop, or remove, your container once you've finished with them.
+#       $ docker conpose pause / unpause
+#       $ docker compose stop / start
+#       $ docker compose down    (stop & remove container)
+#
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#----------------------
+services:
+  ros2-microros:
+    build: .
+    image: kullken/ros2_amd64:jazzy-full-pico
+    # Use/Reuse the same container name all the time
+    container_name: jazzy-full-pico-container
+    privileged: true 
+    network_mode: host
+    environment:
+    # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
+      - DISPLAY=${DISPLAY}
+    # Other $ env to set/passtruth to the container 
+      - KALLE=ANKA  
+    volumes:
+    # Sync docker date, timezone with docker-host 
+    - /etc/localtime:/etc/localtime:ro
+    # Enable docker GUI-applications to access docker-host xhost screen.  
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # Mount the ROS2 Workspace directory from docker-host file system
+    - /home/$USER/ws_ros2:/home/ubuntu/ws_ros2:rw
+    # Hopefully will the RPi Pico appear as '/media/$USER/RPI-RP2'
+    - /media:/media:rw
+    devices:
+    - /dev:/dev                 # Enable access to all /dev/*.* devices as USB-ports and cameras etc.'
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t

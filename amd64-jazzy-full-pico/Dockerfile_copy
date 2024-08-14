@@ -1,0 +1,115 @@
+# Dockerfile: Add on layer for ROS2/Jazzy with extensitons for ROS Micro-ROS and Rasperry Pi Pico 1/2
+# - AMD64/x86 CPU Architecture
+# - ROS Version: ROS2 2024    LTS(amd64) aka."Jazzy"
+# - OS version : Ubuntu 24.04 LTS(amd64) aka."noble"
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#----------------------
+#
+# Build this Docker image with:
+#----------------------
+# $ docker build -t kullken/ros2_amd64:jazzy-full-pico .
+#----------------------
+
+# Launch this Docker image with:
+#----------------------
+# $ docker run  -it --rm --network=host kullken/ros2_amd64:jazzy-full-pico
+#----
+## Commands for running the example ##
+# docker run -it --rm --volume /media/vk:/media/pi --volume /home/vk/ros_ws/src/pet_mcu_common:/home/pi/micro_ros_ws/src/pet_mcu_common --device=/dev/ttyACM0 kullken/ros2_amd64:jazzy-full-pico
+# ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0 baudrate=115200
+#----
+#----------------------
+
+# Some usefull links to source/original...
+# - https://github.com/micro-ROS/micro_ros_setup
+# - https://hub.docker.com/r/osrf/ros/tags?name=jazzy
+
+# Mayby some usefull links to our custom content...
+# - https://github.com/Pet-Series/pet_docker
+# - https://hub.docker.com/r/kullken/
+# - https://hub.docker.com/repository/docker/kullken/ros2_amd64
+
+
+FROM kullken/ros2_amd64:jazzy-full
+
+ENV DOCKERUSER="ubuntu"
+ENV HOMEDIR="/home/${DOCKERUSER}"
+ENV DOCKERPROMPT="Jazzy-full-pico"
+
+LABEL description="ROS2 Jazzy Micro-ROS for RPi Pico image for PC with AMD64/x486"
+LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
+LABEL version="1.0"
+
+SHELL ["/bin/bash", "-c"]
+    
+# pico SDK setup based on:
+# https://robofoundry.medium.com/raspberry-pi-pico-ros2-via-micro-ros-actually-working-in-1-hr-9f7a3782d3e3
+USER root
+RUN apt-get update && sudo apt install -y gcc-arm-none-eabi libnewlib-arm-none-eabi
+
+USER ${DOCKERUSER}
+
+RUN mkdir --parents ${HOMEDIR}/ws_micro_ros/src
+
+WORKDIR ${HOMEDIR}/ws_micro_ros/src
+
+RUN git clone --recurse-submodules https://github.com/raspberrypi/pico-sdk.git
+RUN git clone https://github.com/micro-ROS/micro_ros_raspberrypi_pico_sdk.git
+
+ENV PICO_TOOLCHAIN_PATH=/usr/bin/arm-none-eabi-gcc
+ENV PICO_SDK_PATH=${HOMEDIR}/ws_micro_ros/src/pico-sdk
+
+# ?????
+WORKDIR ${HOMEDIR}/ws_micro_ros/src/micro_ros_raspberrypi_pico_sdk
+RUN mkdir build
+RUN cd build && cmake ..
+RUN cd build && make
+# ?????
+
+# Build micro_ros_agent from source
+WORKDIR ${HOMEDIR}/ws_micro_ros/src
+
+RUN git clone https://github.com/micro-ROS/micro-ROS-Agent.git --branch jazzy
+RUN git clone https://github.com/micro-ROS/micro_ros_msgs.git
+
+WORKDIR ${HOMEDIR}/ws_micro_ros
+
+RUN source /opt/ros/jazzy/setup.bash && colcon build --packages-up-to micro_ros_agent
+RUN echo "source ${HOMEDIR}/ws_micro_ros/install/setup.bash" >> ${HOMEDIR}/.bashrc
+
+
+# Install picotool from source
+# ?????
+USER root
+RUN apt-get update && sudo apt install -y pkg-config libusb-1.0-0-dev
+
+USER ${DOCKERUSER}
+WORKDIR ${HOMEDIR}/ws_micro_ros/src
+
+RUN git clone https://github.com/raspberrypi/picotool.git
+
+WORKDIR ${HOMEDIR}/ws_micro_ros/src/picotool
+
+RUN mkdir build
+RUN cd build && cmake ..
+RUN cd build && make
+# ?????
+
+# Identify USB
+# ?????
+USER root
+RUN mkdir --parents /etc/udev/rules.d
+RUN touch /etc/udev/rules.d/99-picotool.rules
+# RUN echo 'SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", MODE="660", GROUP="plugdev"' >> /etc/udev/rules.d/99-picotool.rules
+RUN echo 'SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0003", MODE="660", GROUP="plugdev"' >> /etc/udev/rules.d/99-picotool.rules
+RUN echo 'SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="000a", MODE="660", GROUP="plugdev"' >> /etc/udev/rules.d/99-picotool.rules
+# ?????
+
+USER ${DOCKERUSER}
+
+# Setup exit condtions
+CMD ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-c"]
