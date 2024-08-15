@@ -45,15 +45,22 @@ WORKDIR ${HOMEDIR}
 # Define prompt "🐳Jazzy-full_ubuntu@yoda:~$"
 RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc 
 
-# Install Neofetch
+# Install fancy 'Neofetch' to generate login banner
 USER root
-RUN apt update -y && apt -y install neofetch \ 
-    && rm -rf /var/lib/apt/lists/* \
-    && echo 'neofetch' >> ${HOMEDIR}/.bashrc 
+RUN apt update -y \
+     && apt -y install neofetch \
+     && rm -rf /var/lib/apt/lists/* \
+     && echo 'neofetch' >> ${HOMEDIR}/.bashrc
+
+# Install minimal editor 'nano'
+RUN apt update -y \
+     && apt -y install nano \
+     && rm -rf /var/lib/apt/lists/*
 
 USER ${DOCKERUSER}
-RUN echo "source /opt/ros/jazzy/setup.bash" >> ${HOMEDIR}/.bashrc
-RUN echo "alias jazzy='source /opt/ros/jazzy/setup.bash'" >> ${HOMEDIR}/.bashrc
+RUN echo "# Added custom stuff into ~/.bashrc"                              >> ${HOMEDIR}/.bashrc
+RUN echo "source /opt/ros/jazzy/setup.bash"                                 >> ${HOMEDIR}/.bashrc
+RUN echo "alias jazzy='source /opt/ros/jazzy/setup.bash'"                   >> ${HOMEDIR}/.bashrc
 RUN echo "alias my_source='source /home/ubuntu/ws_ros2/install/setup.bash'" >> ${HOMEDIR}/.bashrc
 
 # Setup exit condtions
