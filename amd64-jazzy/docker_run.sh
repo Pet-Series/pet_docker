@@ -27,4 +27,4 @@ docker run -it \
  --volume="/etc/sudoers:/etc/sudoers:ro" \
  --volume="/etc/sudoers.d:/etc/sudoers.d:ro" \
  --volume="/etc/localtime:/etc/localtime:ro" \
-osrf/ros:jazzy-desktop-full
+ osrf/ros:jazzy-desktop-full

@@ -40,7 +40,7 @@ services:
     # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
       - DISPLAY=${DISPLAY}
     # Other $ env to set/passtruth to the container 
-      - KALLE=ANKA  
+      - HOSTUSER=${USER}
     volumes:
     # Sync docker date, timezone with docker-host 
     - /etc/localtime:/etc/localtime:ro

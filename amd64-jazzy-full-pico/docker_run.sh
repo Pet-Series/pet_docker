@@ -5,6 +5,7 @@
   --privileged \
   --name jazzy-full-pico-container \
   --env DISPLAY=$DISPLAY \
+  --env HOSTUSER=$USER \
   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
   --volume="/etc/localtime:/etc/localtime:ro" \
   --volume="/media:/media:rw" \

@@ -12,4 +12,5 @@
 # "jazzy" = ROS2 24.04
 # "noble" = Ubuntu 24.04
 # More info: https://hub.docker.com/repositories/kullken
+docker pull osrf/ros:jazzy-desktop-full
 docker build --tag kullken/ros2_amd64:jazzy-full .
