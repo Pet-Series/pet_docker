@@ -5,7 +5,6 @@
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
 # https://github.com/Pet-Series
-#----------------------
 #
 # Build this Docker image with:
 #----------------------

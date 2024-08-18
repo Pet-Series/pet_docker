@@ -1,7 +1,7 @@
 #!/bin/bash
-# Run Image and create Container 
+# Run existing Docker Image and create + start a Docker Container
 # - AMD64/x86 CPU Architecture
-# - ROS Version: ROS2 20.24   LTS (AMD64) aka."Jazzy"
+# - ROS Version: ROS2 20.24   LTS (AMD64) aka."jazzy"
 # - OS version : Ubuntu 24.04 LTS (AMD64) aka."noble"
 #  - Source Image = osrf/ros:jazzy-desktop-full
 #  - Target Container = jazzy-full-container
@@ -23,11 +23,14 @@
 # docker container restart jazzy-full-container
 # docker container kill jazzy-full-container
 # docker container rm jazzy-full-container
+# docker container prune 
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
 # https://github.com/Pet-Series
 #----------------------
+# More info: https://github.com/Pet-Series/pet_docker
+# More info: https://hub.docker.com/repositories/kullken
 xhost local:docker
 docker run -it \
  --name jazzy-full-container \

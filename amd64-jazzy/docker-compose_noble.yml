@@ -6,6 +6,13 @@
 # 2)  Connect bash to existing/new container: 
 #     $ docker exec -it ubuntu-nobel-container bash
 #
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#----------------------
+# More info: https://github.com/Pet-Series/pet_docker
+# More info: https://hub.docker.com/repositories/kullken
 services: 
   bash: 
     image: ubuntu:noble
