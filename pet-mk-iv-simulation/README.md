@@ -7,14 +7,15 @@ ROS1 repository in the https://github.com/Pet-Series Git-Organizations.</br>
 
 Containing a Pet-Mk.IV ROS1-package / data for Gazebo & RViz
 - FROM osrf/ros:noetic-desktop-full-focal (amd64)
-   - Ubuntu 20.04.6 LTS
-   - ROS1 Noetic full desktop
+   - Ubuntu 20.04.6 LTS (aka. "Focal Fossa")
+   - ROS1 Noetic full desktop (aka. "Noetic Ninjemys")
 
 ## **What is this folder for?** ##
 Docker stuff neccesary to be able to build & run robot simulation of Pet-Mk.IV, using Gazebo.</br>
 - https://github.com/Pet-Series/Pet-Mk-IV.git
-- https://github.com/Pet-Series/pet_mk_iv_simulation.git   <-This repo.
-- https://hub.docker.com/repository/docker/kullken/ros1_amd64   < Look for tag `pet-mk-iv-simulation`
+- https://github.com/Pet-Series/pet_mk_iv_simulation.git
+- https://github.com/Pet-Series/pet_docker `<- This Repo.`
+- https://hub.docker.com/repository/docker/kullken/ros1_amd64   `<- Look for tag 'pet-mk-iv-simulation'`
 <table>
     <tr>
         <td>
@@ -31,12 +32,13 @@ Docker stuff neccesary to be able to build & run robot simulation of Pet-Mk.IV, 
 
 
 # Setup
-## **How do I get set up?** ##
-```console
-ubuntu@host:~$ docker pull kullken/ros1_amd64:pet-mk-iv-simulation
+## **How do I set up?** ##
+```bash
+user@host:~$ docker pull kullken/ros1_amd64:pet-mk-iv-simulation
 ```
-```console
-ubuntu@host:~$ docker run \
+```bash
+user@host:~$ xhost local:docker
+user@host:~$ docker run \
     -it \
     --rm \
     --network=host \
@@ -45,4 +47,13 @@ ubuntu@host:~$ docker run \
     --env DISPLAY=${DISPLAY} \
     --name pet-mk-iv-simulation_container \
     kullken/ros1_amd64:pet-mk-iv-simulation
+```
+```bash
+🐳pet@docker:~$ roslaunch pet_mk_iv_simulation testrun_01_avoid-wall-line-stop.launch
+```
+```bash
+user@host:~$ docker exec -it pet-mk-iv-simulation_container bash
+```
+```bash
+🐳pet@docker:~$ roslaunch pet_mk_iv_description rviz.launch
 ```
