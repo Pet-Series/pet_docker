@@ -8,7 +8,7 @@
 # Prerequisite - On docker host: 
 #      I)  That the ROS2 WorkSpace(folder) '/home/$USER/ws_ros2/'' exist before starting the Image/Containner.
 #      II) That '$ xhost local:docker' is run before container is started - To enable GUI/X11 applications inside container
-#
+#----------------------
 # Commands:
 #   1a) Create/Start Container from Image : 
 #       $ docker compose up --detach --build
@@ -22,12 +22,17 @@
 #       $ docker conpose pause / unpause
 #       $ docker compose stop / start
 #       $ docker compose down    (stop & remove container)
-#
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
 # https://github.com/Pet-Series
+#
+# "noetic" = ROS1
+# "focal"  = Ubuntu 20.04 
 #----------------------
+# More info: https://github.com/Pet-Series/pet_docker
+# More info: https://hub.docker.com/repositories/kullken
+# More info: https://hub.docker.com/repository/docker/kullken/ros1_amd64
 services:
   ros2-microros:
     build: .
