@@ -1,17 +1,10 @@
 # Dockerfile for Simulation of Pet-Mk-IV.
-# - ROS Version: ROS2/Humble(arm64)
-# - OS version: Ubuntu 22.04
-#----------------------
-# Maintainer: stefan.kull@gmail.com
-# Licens: MIT
-# https://github.com/Pet-Series
-#----------------------
-
+#
 # Build Docker image with:
 #----------------------
 # $ docker build --tag kullken/ros2_arm64v8:pet-mk-viii-runtime .
 #----------------------
-
+#
 # Launch Docker image with:
 #----------------------
 # $ docker run \
@@ -22,13 +15,25 @@
 #   --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
 #   kullken/ros2_arm64v8:pet-mk-viii-runtime /bin/bash
 #----------------------
-# Prerequisit: Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git
-
-# Some usefull links...
-# https://hub.docker.com/r/arm64v8/ros/tags
-# https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-# https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-
+# Prerequisit: Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2/src
+#
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#
+# "humble"= ROS2
+# "focal"  = Ubuntu 20.04 
+#
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+#----------------------
+# TODO: Fix the strange/wrong path for the entrypoint.sh
+#       Ether be in '${HOMEDIR}', '${HOMEDIR}/ws_ros2' OR reause the default in '\'
+#
 FROM  kullken/ros2_arm64v8:pet-base-humble 
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
