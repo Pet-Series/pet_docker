@@ -1,7 +1,8 @@
 # Docker specifications supporting the Pet-Series of robots.
-Docker specifications supporting Pet-Series and ROS1/ROS2 middlware.
-* Docker images for Arm64 like Rasberry Pi running 64bit Ubuntu
-* Docker images for Amd64 like PC running 64bit Ubuntu
+This repo hosts Dockerfiles and scaffolding for images in the Pet-Series oarganisation.
+Docker specifications supporting Pet-Series and ROS1/ROS2 middleware.
+* Docker images for ARM4 = Rasberry Pi running 64bit Ubuntu
+* Docker images for AMD64/X86 = PC running 64bit Ubuntu
 
 # GitHub Links
 * https://github.com/Pet-Series
@@ -10,11 +11,12 @@ Docker specifications supporting Pet-Series and ROS1/ROS2 middlware.
   * **Target architecture:** ARM64 (aka."Rasberry Pi 3-4-5")
   * **Operating system:** Ubuntu
   * **Middleware:** Robot Operating System 2 (ROS2)
-* https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-* https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-* https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+* https://hub.docker.com/repository/docker/kullken/ros2_arm64v8* 
+  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
 
-# Docker for Robot Operating System 2 (ROS2)
+# Docker for Robot Operating System 2 (ROS2) - Offboard
   * **Target architecture:** AMD64/x86 (aka."PC", aka. "Workstation")
   * **Operating system:** Ubuntu
   * **Middleware:** Robot Operating System 2 (ROS2)
