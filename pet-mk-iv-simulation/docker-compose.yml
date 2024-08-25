@@ -1,7 +1,8 @@
-# Launch [Builds, (re)creates, starts] using $ docker compose
+# Launch [Builds Image, (re)creates & starts Container] using $ docker compose
+# - Based on Dockerfile in current directory = '/home/${USER}/ws_ros2/src/pet_docker/pet-mk-iv-simulation'
 #
 # Prerequisite - On docker host: 
-#       I) That '$ xhost local:docker' is run before container is started - To enable GUI/X11 applications inside container
+#       I) That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications in the container
 #----------------------
 # Commands:
 #   1)  Enable X11 from inside the Docker Image/Container
@@ -13,7 +14,7 @@
 #       $ docker compose ps -all
 #
 #   3)  Connect bash to existing/new container: 
-#       $ docker exec -it jazzy-full-pico-container bash
+#       $ docker exec -it pet-mk-iv-simulation_container bash
 #          OR
 #       $ ./docker_exec.sh
 #
@@ -31,27 +32,30 @@
 # "noetic" = ROS1
 # "focal"  = Ubuntu 20.04 
 #----------------------
-# More info: https://github.com/Pet-Series/pet_docker
-# More info: https://hub.docker.com/repositories/kullken
-# More info: https://hub.docker.com/repository/docker/kullken/ros1_amd64
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros1_amd64
+#    - https://hub.docker.com/r/osrf/ros/tags?page=1&name=noetic
 services:
   ros1:
     build: .
     image: kullken/ros1_amd64:pet-mk-iv-simulation
     container_name: pet-mk-iv-simulation_container
     labels:
-      - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV(label)"
+      - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV[service]"
     deploy:
       labels:
-        - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV(service)"
+        - "se.pet-series.description=ROS1 Noetic for Pet-Mk.IV[deploy]"
     environment:
       - DISPLAY=${DISPLAY}
+      - HOSTUSER=${USER} 
     privileged: true
-    network_mode: "host"
+    network_mode: host
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw   # Enable X11
+      - /etc/localtime:/etc/localtime:ro   # Sync timezone
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     # restart: always
     # restart: unless-stopped
-    # command: [ "roscore" ] 
