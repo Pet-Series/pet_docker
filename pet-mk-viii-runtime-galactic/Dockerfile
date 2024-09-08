@@ -49,16 +49,6 @@ LABEL description="ROS2 Galactic image for Pet-Mk.VIII (aka. 'Dashboard') - Laun
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.0"
 
-SHELL ["/bin/bash", "-c"]
-
-USER ${DOCKERUSER}
-
-# Put the Docker ros_entrypoint.sh script in the right place...
-COPY ./ros-entrypoint.sh  ${HOMEDIR}/ros-entrypoint.sh
-USER root
-RUN  chmod 755 ${HOMEDIR}/ros-entrypoint.sh && chown ${DOCKERUSER} ${HOMEDIR}/ros-entrypoint.sh  && sudo chgrp ${DOCKERUSER} ${HOMEDIR}/ros-entrypoint.sh
-USER ${DOCKERUSER}
-
 # Recreate/Pre-load the '.bash_history' for commands
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
@@ -66,6 +56,7 @@ COPY .bash_history ${HOMEDIR}/.bash_history
 USER root
 RUN  chmod 600 ${HOMEDIR}/.bash_history && chown ${DOCKERUSER} ${HOMEDIR}/.bash_history  && sudo chgrp ${DOCKERUSER} ${HOMEDIR}/.bash_history 
 
-# As default - Launch ROS2 nodes
+# Setup exit condtions
+USER ${DOCKERUSER}
 CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]
-ENTRYPOINT ["${HOMEDIR}/ros-entrypoint.sh"]
+# ENTRYPOINT ["${HOMEDIR}/ros-entrypoint.sh"]
