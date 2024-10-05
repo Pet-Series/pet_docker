@@ -1,6 +1,6 @@
 #!/bin/bash
 # Run docker image from https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-# Default ENTRYPOINT 'CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]'
+# Entrypoint CMD = /bin/bash
 #
 # Prerequisite - On docker host: 
 #       I)  That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications inside the container
@@ -19,9 +19,9 @@
 #    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
 docker run \
- -it \
- --rm \
- --network=host \
- --privileged \
- --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
-kullken/ros2_arm64v8:pet-mk-viii-runtime
+    -it \
+    --rm \
+    --network=host \
+    --privileged \
+    --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
+    kullken/ros2_arm64v8:pet-mk-viii-humble /bin/bash

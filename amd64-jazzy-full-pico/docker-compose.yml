@@ -59,3 +59,7 @@ services:
     - /dev:/dev                 # Enable access to all /dev/*.* devices as USB-ports and cameras etc.'
     stdin_open: true # docker run -i
     tty: true        # docker run -t
+    # restart: always
+    # restart: unless-stopped
+    # command: [...stuff...] 
+    # entrypoint: ["/home/pet/ros_entrypoint.sh"]
