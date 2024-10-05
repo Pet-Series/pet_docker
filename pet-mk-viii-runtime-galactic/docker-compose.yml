@@ -1,0 +1,51 @@
+# Launch [Build Image, (re)Creates & Starts Container] using '$ docker compose up  --detach --build'
+# - Based on Dockerfile in current directory = '/home/${USER}/ws_ros2/src/pet_docker/pet-mk-viii-runtime-galactic'
+#
+# Prerequisite - On docker host before starting Docker Image/Container: 
+#       I)  That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications inside the container
+#       II) Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2-galactic/src
+#
+# Launch with: 
+# $ docker compose up --detach --build
+#
+# Connect shell/bash by: 
+# $ docker exec -it pet-mk-viii-runtime-galactic_container bash
+#
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#
+# "galactic" = ROS2
+# "focal"  = Ubuntu 20.04 
+#
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
+services:
+  ros2:
+    build: .
+    image: kullken/ros2_arm64v8:pet-mk-v-runtime-galactic
+    container_name: pet-mk-viii-runtime-galactic_container
+    labels:
+      - "se.pet-series.description=ROS2 Galatic for Pet-Mk.VIII (aka.'Dashboard')"
+    privileged: true
+    devices:
+    #- "/dev/ttyUSB0:/dev/ttyUSB0"     # USB
+    - "/dev/gpiomem:/dev/gpiomem"     # GPIO
+    - "/dev/i2c-1:/dev/i2c-1"         # I2C-1
+    #- "/dev/i2c-2:/dev/i2c-2"         # I2C-2
+    - "/dev/spidev0.0:/dev/spidev0.0" # SPI.0
+    - "/dev/spidev0.1:/dev/spidev0.1" # SPI.1
+    network_mode: host
+    volumes:
+    - /home/pi/ws_ros2-galactic:/home/pet/ws_ros2-galactic:rw
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    - /etc/localtime:/etc/localtime:ro
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    # restart: always
+    # restart: unless-stopped
+    command: [ "ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]  

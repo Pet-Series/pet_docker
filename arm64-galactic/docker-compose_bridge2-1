@@ -1,0 +1,55 @@
+# Launch [Builds, (re)creates, starts] with: 
+# $ docker compose --file docker-compose_bridge2-1.yml up
+#
+# Connect shell/bash by:
+# $ xhost local:docker
+# $ docker exec -it pet-mk-iv-simulation_container bash
+#
+# Remove
+# $ docker compose down
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#
+# "galactic" = ROS2
+# "focal"  = Ubuntu 20.04 
+#
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#    - https://index.ros.org/p/ros1_bridge/github-ros2-ros1_bridge/
+#    - https://hub.docker.com/_/ros
+#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
+services:
+  roscore:
+    image: kullken/ros2_arm64v8:pet-base-galactic
+    # build:
+    #   context: ./
+    #   dockerfile: ros2.Dockerfile
+    command: 
+      - ros2 run demo_nodes_py talker
+
+  # ros2-talker:
+  #   image: kullken/ros2_arm64v8:pet-base-galactic
+  #   # build:
+  #   #   context: ./
+  #   #   dockerfile: ros2.Dockerfile
+  #   command: ros2 run demo_nodes_py talker
+
+  # ros1-listener:
+  #   image: kullken/ros2_arm64v8:pet-base-galactic 
+  #   # build:
+  #   #   context: ./
+  #   #   dockerfile: ros1.Dockerfile
+  #   command: rosrun rospy_tutorials listener
+  
+  # bridge:
+  #   image: kullken/ros2_arm64v8:pet-base-galactic
+  #   environment:
+  #     - "ROS_HOSTNAME=bridge"
+  #     - "ROS_MASTER_URI=http://ros1:11311"
+  #   command: ros2 run ros1_bridge dynamic_bridge
+  #   depends_on:  
+  #   - ros1  
