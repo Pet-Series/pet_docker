@@ -14,4 +14,4 @@
 #    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
 docker pull kullken/ros2_arm64v8:pet-base-humble
-docker pull kullken/ros2_arm64v8:pet-mk-viii-runtime
+docker pull kullken/ros2_arm64v8:pet-mk-viii-humble
