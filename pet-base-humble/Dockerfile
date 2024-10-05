@@ -2,10 +2,6 @@
 # - ROS Version: ROS2/Humble(arm64)
 # - OS version: Ubuntu 22.04
 #----------------------
-# Maintainer: stefan.kull@gmail.com
-# Licens: MIT
-# https://github.com/Pet-Series
-#----------------------
 
 # Build Docker image with:
 #----------------------
@@ -17,10 +13,20 @@
 # $ docker run -it --rm --network=host --privileged kullken/ros2_arm64v8:pet-base-humble
 #----------------------
 
-# Some usefull links...
-# https://hub.docker.com/r/arm64v8/ros/tags
-# https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-# https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#
+# "humble"= ROS2
+# "jammy"  = Ubuntu 22.04
+#
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+#
 FROM arm64v8/ros:humble-ros-base-jammy
 
 ENV DOCKERUSER="pet"
@@ -59,16 +65,17 @@ RUN echo "${DOCKERUSER}:d0cker" | chpasswd
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 
-RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc 
-
 # Install required software i2c
 USER root
-RUN apt update -y && apt -y install i2c-tools python3-pip
-##    && rm -rf /var/lib/apt/lists/*
+RUN apt update -y &&\
+    apt -y install i2c-tools python3-pip &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Install Neofetch
-RUN sudo apt update -y && apt -y install neofetch && echo 'neofetch' >> /home/pet/.bashrc 
-##    && rm -rf /var/lib/apt/lists/*
+RUN apt update -y &&\
+    apt -y install neofetch &&\
+    echo 'neofetch' >> /home/pet/.bashrc &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Install Python3 extentions for I2C, GPIO and AD-converter
 USER ${DOCKERUSER}
@@ -77,24 +84,32 @@ RUN pip3 install \
         Adafruit_ADS1x15 \
         board \
         adafruit-blinka \
+        gpio \
         lgpio \
+        pigpio \
         smbus2 \
         gpiozero \
         rpi_lcd
-# WARNING: The scripts pyserial-miniterm and pyserial-ports are installed in '/home/pet/.local/bin' which is not on PATH.
 
-# Install VisualCode
-# USER root
-# RUN apt update -y && apt -y install software-properties-common apt-transport-https wget
-#RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-#RUN wget -O- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /usr/share/keyrings/vscode.gpg
-#RUN add-apt-repository "deb [arch=arm64] https://packages.microsoft.com/repos/vscode stable main"
-#RUN echo deb [arch=arm64 signed-by=/usr/share/keyrings/vscode.gpg] https://packages.microsoft.com/repos/vscode stable main | tee /etc/apt/sources.list.d/vscode.list
-#RUN apt update -y && apt install -y code
+# WARNING: The scripts pyserial-miniterm and pyserial-ports are installed in '/home/pet/.local/bin' which is not on PATH.
+# WARNING: The scripts pinout and pintest are installed in '/home/pet/.local/bin' which is not on PATH.  
+
+# Install GPIO-nice-to-have-tool, including $ gpioinfo
+USER root
+RUN apt update -y &&\
+    apt -y install gpiod &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Adding stuff to >> $~/.bashrc
 USER ${DOCKERUSER}
-RUN echo "alias humble='source /opt/ros/humble/setup.bash'" >> ${HOMEDIR}/.bashrc
-RUN echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'" >> ${HOMEDIR}/.bashrc
+RUN echo '# Setting up my own fancy Terminal Prompt :-)'                    >> ${HOMEDIR}/.bashrc &&\
+    echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc &&\
+    echo '# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
+    echo "alias humble='source /opt/ros/humble/setup.bash'"                 >> ${HOMEDIR}/.bashrc &&\
+    echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc
 
 # Setup exit condtions
+USER ${DOCKERUSER}
+WORKDIR ${HOMEDIR}
 CMD ["/bin/bash"]
 ENTRYPOINT ["/bin/bash", "-c"]

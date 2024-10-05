@@ -2,18 +2,18 @@
 #
 # Build Docker image with:
 #----------------------
-# $ docker build --tag kullken/ros2_arm64v8:pet-mk-viii-runtime .
+# $ docker build --tag kullken/ros2_arm64v8:pet-mk-viii-humble .
 #----------------------
 #
 # Launch Docker image with:
 #----------------------
 # $ docker run \
-#   -it \
-#   --rm \
-#   --network=host \
-#   --privileged \
-#   --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
-#   kullken/ros2_arm64v8:pet-mk-viii-runtime /bin/bash
+#     -it \
+#     --rm \
+#     --network=host \
+#     --privileged \
+#     --volume="/home/pi/ws_ros2:/home/pet/ws_ros2" \
+#     kullken/ros2_arm64v8:pet-mk-viii-humble/bin/bash
 #----------------------
 # Prerequisit: Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2/src
 #
@@ -30,9 +30,6 @@
 #    - https://hub.docker.com/repositories/kullken
 #    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-#----------------------
-# TODO: Fix the strange/wrong path for the entrypoint.sh
-#       Ether be in '${HOMEDIR}', '${HOMEDIR}/ws_ros2' OR reause the default in '\'
 #
 FROM  kullken/ros2_arm64v8:pet-base-humble 
 ENV DOCKERUSER="pet"
@@ -54,12 +51,23 @@ RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${
 RUN echo 'source ${HOMEDIR}/ws_ros2/install/setup.bash' >> /home/pet/.bashrc 
 
 # Put the entrypoint.sh script in the right place...
-RUN mkdir --parent ${HOMEDIR}/src/Pet-Mk-VIII/docker/pet-mk-viii-runtime
-COPY ./entrypoint.sh  ./src/Pet-Mk-VIII/docker/pet-mk-viii-runtime/entrypoint.sh
+COPY ./ros_entrypoint.sh ${HOMEDIR}/ros_entrypoint.sh 
 USER root
-RUN chmod +x ${HOMEDIR}/src/Pet-Mk-VIII/docker/pet-mk-viii-runtime/entrypoint.sh
+RUN chmod +x ${HOMEDIR}/ros_entrypoint.sh && \
+    chown ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh &&\
+    chgrp ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh
+USER ${DOCKERUSER} 
+
+# Recreate/Pre-load the '.bash_history' for commands
+USER ${DOCKERUSER}
+WORKDIR ${HOMEDIR}
+COPY .bash_history ${HOMEDIR}/.bash_history
+USER root
+RUN chmod 600 ${HOMEDIR}/.bash_history &&\
+    chown ${DOCKERUSER} ${HOMEDIR}/.bash_history &&\
+    chgrp ${DOCKERUSER} ${HOMEDIR}/.bash_history 
 USER ${DOCKERUSER}
 
 # As default - Launch ROS2 nodes
-CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]
-ENTRYPOINT ["/home/pet/src/Pet-Mk-VIII/docker/pet-mk-viii-runtime/entrypoint.sh"]
+# CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]
+ENTRYPOINT ["/home/pet/ros_entrypoint.sh"]
