@@ -1,0 +1,61 @@
+# Launch [Builds, (re)creates, starts] using $ docker compose
+#
+# Prerequisite - On docker host: 
+#       I) Raspberry Pi(ARM64) with Ubuntu & Docker installed.
+#----------------------
+# Commands:
+#   1a) Build Image + Start Container in the background: 
+#       $ docker compose up --detach --build 
+#      ($ docker compose up --detach)
+#   2b) List running/active/paused containers
+#       $ docker compose ps -all
+#
+#   3)  Connect bash to existing/new container: 
+#       $ docker exec -it pet-base-jazzy_container bash
+#          OR
+#       $ ./docker_exec.sh
+#
+#   4)  To end/remove the container after usage.
+#       $ docker compose down
+#----------------------
+# Maintainer: stefan.kull@gmail.com
+# Licens: MIT
+# https://github.com/Pet-Series
+#
+# "jazzy" = ROS2
+# "noble"  = Ubuntu 24.04 
+#----------------------
+# More info: 
+#    - https://github.com/Pet-Series/pet_docker
+#    - https://hub.docker.com/repositories/kullken
+#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+
+services:
+  ros2:
+    build: .
+    image: kullken/ros2_arm64v8:pet-base-jazzy
+    container_name: pet-base-jazzy_container
+    privileged: true
+    devices:
+      #- "/dev/ttyUSB0:/dev/ttyUSB0"     # USB
+      - /dev/gpiomem:/dev/gpiomem:rw     # GPIO memory mapping
+      - /dev/mem:/dev/mem:rw             #...should be removed!!
+      - /dev/i2c-1:/dev/i2c-1:rw         # I2C-1
+      #- "/dev/i2c-2:/dev/i2c-2"         # I2C-2
+      - /dev/spidev0.0:/dev/spidev0.0:rw # SPI.0
+      - /dev/spidev0.1:/dev/spidev0.1:rw # SPI.1
+      - /dev/vchiq:/dev/vchiq:ro         # Broadcom/CPU-core stuff...
+
+    network_mode: host
+    volumes:
+      - /home/pi/ws_ros2:/home/pet/ws_ros2:rw   # Shared developing/source code folder.
+      - /etc/localtime:/etc/localtime:ro        # Sync docker image/container date & timezone with docker-host
+      - /proc/device-tree:/proc/device-tree:ro
+      - /lib:/lib:ro
+      - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro  # Broadcom/CPU-core stuff...
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    # restart: always
+    # restart: unless-stopped
+    # command: [...stuff...] 
