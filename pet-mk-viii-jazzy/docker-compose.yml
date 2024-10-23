@@ -5,8 +5,10 @@
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
-#  II) Enable x11 gui from inside the Docker Image/Container.
+#  II) Before start Image/Container: Enable x11/gui to be used from inside the Docker Image/Container.
+#      Make sure that '$ xhost local:docker' is started before the container is started.
 #       $ xhost local:docker
+# III) Clone https://github.com/Pet-Series/Pet-Mk-VIII.git => To Docker host file sytem dir. '/home/pet/ws_ros2-jazzy/src'
 #----------------------
 # Commands:
 #  1) Build Image + Create and Start Container in the background.
@@ -17,8 +19,10 @@
 #  2) List running/active/paused containers
 #     $ docker compose ps -all
 #
-#  3)  Connect bash/terminal to existing/new container: 
-#      $ docker exec -it pet-base-jazzy_container bash
+#  3)  Connect bash/terminal to existing/new container:
+#      $ ./docker_exec.sh
+#             or
+#      $ docker exec -it pet-mk-viii-jazzy_container bash
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
@@ -32,40 +36,33 @@
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-
 services:
   ros2:
     build: .
-    image: kullken/ros2_arm64v8:pet-base-jazzy
-    container_name: pet-base-jazzy_container
+    image: kullken/ros2_arm64v8:pet-mk-viii-jazzy
+    container_name: pet-mk-viii-jazzy_container
     labels:
-      - "se.pet-series.description=ROS2 Stuff for Pet-Series[service]"
-    deploy:
-      labels:
-      - "se.pet-series.description=ROS2 Stuff for Pet-Series[deploy]"
-    environment:
-      - DISPLAY=${DISPLAY}
-      - HOSTUSER=${USER} 
+      - "se.pet-series.description=ROS2 jazzy for Pet-Mk.VIII (aka.'Dashboard')"
     privileged: true
     network_mode: host
     devices:
-      #- "/dev/ttyUSB0:/dev/ttyUSB0"     # USB
-      - /dev/gpiomem:/dev/gpiomem:rw     # GPIO memory mapping
-      - /dev/i2c-1:/dev/i2c-1:rw         # I2C-1
-      #- "/dev/i2c-2:/dev/i2c-2"         # I2C-2
-      - /dev/spidev0.0:/dev/spidev0.0:rw # SPI.0
-      - /dev/spidev0.1:/dev/spidev0.1:rw # SPI.1
-      - /dev/vchiq:/dev/vchiq:ro         # CPU/Broadcom-core stuff...
-
+      #- /dev/ttyUSB0:rw    # USB
+      - /dev/gpiomem:rw     # GPIO memory mapping
+      - /dev/i2c-1:rw       # I2C-1
+      #- /dev/i2c-2:rw      # I2C-2
+      - /dev/spidev0.0:rw   # SPI.0
+      - /dev/spidev0.1:rw   # SPI.1
+      - /dev/vchiq:ro       # Broadcom/CPU-core stuff...
     volumes:
       - /home/pi/ws_ros2:/home/pet/ws_ros2:rw   # Shared developing/source code folder.
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw        # Enable GUI/X11
       - /etc/localtime:/etc/localtime:ro        # Sync docker image/container date & timezone with docker-host
       - /proc/device-tree:/proc/device-tree:ro  # Broadcom/CPU-core stuff...
-     # - /lib:/lib:ro
-      - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro  # Broadcom/CPU-core stuff...
+      - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro  # Broadcom/CPU-graphic stuff...
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     # restart: always
     # restart: unless-stopped
-    command: 
-      - /bin/bash
+    # command: [ "ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]
+    # command: 
+    #  - /bin/bash

@@ -1,9 +1,9 @@
 #!/bin/bash
-# Push an existing local Docker Image to DockerHub repository.
+# Start new bash/terminal in existing custom Docker Container.
 #
-# Prerequisites:
-#   - docker login -u "kullken" -p "@@@@@@@@" docker.io
-#   - ...existing local Docker Image kullken/ros2_arm64v8:pet-base-jazzy
+# Prerequisite - On docker host: 
+#   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
+#  II) Docker Container with name 'pet-mk-viii-jazzy_container' is Up or Paused.
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
@@ -17,4 +17,8 @@
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-docker push kullken/ros2_arm64v8:pet-base-jazzy
+docker exec \
+    --interactive \
+    --tty \
+    pet-mk-viii-jazzy_container \
+    /home/pet/ros_entrypoint.sh bash

@@ -1,58 +1,58 @@
-# Dockerfile: Base layer for ROS2/jazzy running on Raspberry PI
-# - ROS Version: ROS2/jazzy(arm64)
-# - OS version: Ubuntu 24.04
+# Dockerfile
+# Custom ROS2 / Ubuntu 24.04 Docker Image/Container for RasperryPI(arm64v8 CPU Architecture)
+#  - Enabeling hardware access like I2C, GPIO and SPI.
 #----------------------
-
-# Build Docker image with:
-#----------------------
-# $ docker build -t kullken/ros2_arm64v8:pet-base-jazzy .
-#----------------------
-
-# Launch Docker image with:
-#----------------------
-# $ docker run -it --rm --network=host --privileged kullken/ros2_arm64v8:pet-base-jazzy
-#----------------------
-
+# Commands:
+#  1) Build Image     tag='kullken/ros2_arm64v8:pet-base-jazzy'
+#     Start Container name='pet-base-jazzy_container'
+#     $ docker compose up --detach --build 
+#
+#  2) List running/active/paused containers
+#     $ docker compose ps -all
+#
+#  3)  Connect bash/terminal to existing/new container: 
+#      $ docker exec -it pet-base-jazzy_container bash
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
 # https://github.com/Pet-Series
 #
-# "jazzy"= ROS2
-# "noble"  = Ubuntu 24.04
+#  - ROS2 Version: ROS2/jazzy(arm64)
+#  - OS version:   Ubuntu 24.04/noble
 #
 # More info: 
-#    - https://github.com/Pet-Series/pet_docker
-#    - https://hub.docker.com/repositories/kullken
-#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+#  - https://github.com/Pet-Series/pet_docker
+#  - https://hub.docker.com/repositories/kullken
+#  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
 #
 FROM arm64v8/ros:jazzy-ros-base-noble
 
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
+ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
+ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
 ENV DOCKERPROMPT="Pet-Base-jazzy"
 
-LABEL description="ROS2 jazzy image for RasperryPI with I2C & GPIO access"
+LABEL description="Custom ROS2 jazzy base (Ubuntu 24.04) image for RasperryPI(arm64) with support for hardware access like I2C, GPIO and SPI."
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.0"
 
 SHELL ["/bin/bash", "-c"]
 
 # Setup Docker user "pet" for access to i2c and GPIO
-# Support Ubuntu 24.04 using group: dailout
-# Support RaspianOS using groups:   spi,i2c,gpio
-# gpio  => ls -la /dev/gpiomem {Acces via group 'dialout'}
-# i2c   => ls -la /dev/i2c*    {Acces via group 'dialout'}
-# spi   => ls -la /dev/spi*    {Acces via group 'dialout'}
-# USB   => ls -la /dev/ttyUSB* {Acces via group 'dialout'}
-# video => ls -la /dev/vchiq   {Acces via group 'dialout'}
-## // RUN groupadd --force --gid 997 gpio
-## // RUN groupadd --force --gid 998 i2c
-## // RUN groupadd --force --gid 999 spi
-RUN groupadd --force --gid  20 dialout
-RUN groupadd --force --gid  27 sudo
-RUN groupadd --force --gid  44 video
+# Support Ubuntu 24.04 using group: dailout,video
+# Support RaspianOS using groups:   spi,i2c,gpio, video
+# Group 'dialout' => ls -la /dev/gpiomem {Part of the '/dev/mem' that is used for the gpio}
+# Group 'dialout' => ls -la /dev/i2c*    {Could be 1 or 2 i2c ports}
+# Group 'dialout' => ls -la /dev/spi*
+# Group 'dialout' => ls -la /dev/ttyUSB*
+# Group 'video'   => ls -la /dev/vchiq
+
+# Remove Ubuntu/Image default user = 1000:1000 with name 'ubuntu'
+# Create new user = 1000:1000 with name '${DOCKERUSER}' 
+USER root
+RUN userdel --remove ubuntu
 
 RUN useradd \
     --uid 1000 \
@@ -63,43 +63,84 @@ RUN useradd \
     --groups adm,dialout,sudo,video,audio,plugdev,dip \
     ${DOCKERUSER}
 RUN echo "${DOCKERUSER}:d0cker" | chpasswd
+
+# Install 'neofetch' nice-to-have-tool that shows os/linux info + ASCII-art stuff.
+# Install 'nano' nice-to-have-tool as text editor
+USER root
+RUN apt-get update -y &&\
+    apt-get install -y neofetch &&\
+        echo '# Launch "neofetch" in each terminal' >> /home/pet/.bashrc &&\
+        echo 'neofetch' >> /home/pet/.bashrc &&\
+    apt-get install -y nano &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Install 'i2c-tools' I2C-required software, including '$ i2cdetect'
+# Install 'gpiod' GPIO-nice-to-have-tool, including '$ gpioinfo'
+# Install 'net-tool' LAN-nice-to-have-tool, including '$ ifconfig'
+# Install 'libraspberrypi-bin' vcgencmd tool is used to output information from the VideoCore GPU on the Raspberry Pi. 
+# Install 'gpiod'
+USER root
+RUN apt-get update -y &&\
+    apt-get install -y \
+        i2c-tools \
+        net-tools \
+        libraspberrypi-bin \
+        gpiod &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Install extentions for I2C, GPIO and SPI
+# - Note: If possible try find .deb package via '$ apt-get install', instead of using '$ pip3 install',
+#         due to risk of introducing dependencies missmatch when using '$ pip3 install'
+USER root
+RUN apt-get update -y &&\
+    apt-get install -y --upgrade python3-setuptools &&\
+    apt-get install -y \
+        pipx \
+        python3-pip \
+        python3-lgpio \
+        python3-rpi-lgpio \
+        python3-smbus2 \
+        python3-gpiozero \
+        python3-venv &&\
+        rm -rf /var/lib/apt/lists/*
+
+# Setup a local ROS2 Workspace in local Docker file system
+# USER ${DOCKERUSER}
+# RUN mkdir -p ${WS_LOCAL}/src
+# RUN cd ${WS_LOCAL}
+# RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash; colcon build --symlink-install"
+# Setup a Python3 virtual environment in the local ROS2 workspace
+# USER ${DOCKERUSER}
+# RUN python3 -m venv --system-site-packages ${VIRTUAL_ENV}
+# # RUN echo "Colcon (ROS2) should not try to build this directory ($VIRTUAL_ENV)" > ${VIRTUAL_ENV}/COLCON_IGNORE
+# # source ./venv/bin/activate
+# ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
+
+# Install Python3 extentions/libraries for I2C, GPIO + Drivers for sensors/actuators
+USER ${DOCKERUSER}
+RUN pip3 install --break-system-packages \
+         adafruit-blinka \
+         adafruit-circuitpython-ads1x15 \
+         adafruit-circuitpython-ina219 \
+         adafruit-circuitpython-mpu6050 \
+         adafruit-circuitpython-vl53l1x 
+
+# RUN pip3 install \
+#         RPi.GPIO \  => sudo apt-get install python3-rpi.gpio
+#         Adafruit_ADS1x15 \
+#         board \
+#         adafruit-blinka \
+#         gpio \
+#         lgpio \    => sudo apt-get install python3-lgpio
+#         pigpio \   => Not needed for now!
+#         smbus2 \   => sudo apt-get install python3-smbus2
+#         gpiozero \ => sudo apt-get install python3-gpiozero
+#         rpi_lcd
+
+# Stuff...
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
-
-# Install required software i2c
-USER root
-RUN apt update -y &&\
-    apt -y install i2c-tools python3-pip &&\
-    rm -rf /var/lib/apt/lists/*
-
-# Install Neofetch
-RUN apt update -y &&\
-    apt -y install neofetch &&\
-    echo 'neofetch' >> /home/pet/.bashrc &&\
-    rm -rf /var/lib/apt/lists/*
-
-# Install Python3 extentions for I2C, GPIO and AD-converter
-USER ${DOCKERUSER}
-RUN pip3 install \
-        RPi.GPIO \
-        Adafruit_ADS1x15 \
-        board \
-        adafruit-blinka \
-        gpio \
-        lgpio \
-        pigpio \
-        smbus2 \
-        gpiozero \
-        rpi_lcd
-
-# WARNING: The scripts pyserial-miniterm and pyserial-ports are installed in '/home/pet/.local/bin' which is not on PATH.
-# WARNING: The scripts pinout and pintest are installed in '/home/pet/.local/bin' which is not on PATH.  
-
-# Install GPIO-nice-to-have-tool, including $ gpioinfo
-USER root
-RUN apt update -y &&\
-    apt -y install gpiod &&\
-    rm -rf /var/lib/apt/lists/*
+RUN echo "Created this file so I do not get the annoying messages 'To run a command as administrator...'" > ~/.sudo_as_admin_successful
 
 # Adding stuff to >> $~/.bashrc
 USER ${DOCKERUSER}
