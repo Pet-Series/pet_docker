@@ -4,7 +4,6 @@
 # Connect shell/bash by: 
 # $ docker exec -it pet-mk-v-runtime_container bash
 
-version: "3"
 services:
   ros2:
     image: kullken/ros2_arm64v8:pet-mk-v-runtime
