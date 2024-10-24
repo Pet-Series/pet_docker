@@ -1,14 +1,14 @@
 # Launch [Builds, (re)creates, starts] using $ docker compose
 #
-# Custom ROS2/Ubuntu Docker Image&Container for RasperryPI(arm64v8 CPU Architecture)
-#  - Enabeling hardware access like I2C, GPIO and SPI.
+# Custom ROS2/Ubuntu Docker Image&Container for RaspberryPI(arm64v8 CPU Architecture)
+#  - Enabling hardware access like I2C, GPIO and SPI.
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
 #  II) Before start Image/Container: Enable x11/gui to be used from inside the Docker Image/Container.
 #      Make sure that '$ xhost local:docker' is started before the container is started.
 #       $ xhost local:docker
-# III) Clone https://github.com/Pet-Series/Pet-Mk-VIII.git => To Docker host file sytem dir. '/home/pet/ws_ros2-jazzy/src'
+# III) Clone https://github.com/Pet-Series/Pet-Mk-VIII.git => To Docker host file system dir. '/home/pet/ws_ros2-jazzy/src'
 #----------------------
 # Commands:
 #  1) Build Image + Create and Start Container in the background.
@@ -25,7 +25,7 @@
 #      $ docker exec -it pet-mk-viii-jazzy_container bash
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)

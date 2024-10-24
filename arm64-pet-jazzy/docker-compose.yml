@@ -1,7 +1,7 @@
 # Launch [Builds, (re)creates, starts] using $ docker compose
 #
-# Custom ROS2/Ubuntu Docker Image&Container for RasperryPI(arm64v8 CPU Architecture)
-#  - Enabeling hardware access like I2C, GPIO and SPI.
+# Custom ROS2/Ubuntu Docker Image&Container for RaspberryPI(arm64v8 CPU Architecture)
+#  - Enabling hardware access like I2C, GPIO and SPI.
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
@@ -21,7 +21,7 @@
 #      $ docker exec -it pet-base-jazzy_container bash
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)

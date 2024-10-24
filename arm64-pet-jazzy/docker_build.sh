@@ -3,10 +3,10 @@
 # Loggfile created with name 'docker_build.log' in the same directory.
 #
 # Prerequisite - On docker host: 
-#   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
+#   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.  
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)

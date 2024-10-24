@@ -6,7 +6,7 @@
 #  II) Docker Container with name 'pet-base-jazzy_container' is Up or Paused.
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)

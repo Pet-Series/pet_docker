@@ -2,7 +2,7 @@
 # Download existing Customized Docker Image from DockerHub repository.
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)
