@@ -116,9 +116,9 @@ RUN echo "Created this file so I do not get the annoying messages 'To run a comm
 
 # Adding stuff to existing  >> $~/.bashrc
 USER ${DOCKERUSER}
-RUN echo '\n# Setting up my own fancy Terminal Prompt :-)'                    >> ${HOMEDIR}/.bashrc &&\
+RUN echo '# Setting up my own fancy Terminal Prompt :-)'                    >> ${HOMEDIR}/.bashrc &&\
     echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc &&\
-    echo '\n# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
+    echo '# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
     echo "alias humble='source /opt/ros/humble/setup.bash'"                 >> ${HOMEDIR}/.bashrc &&\
     echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc
 

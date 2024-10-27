@@ -10,6 +10,7 @@
 #
 # Prerequisite - On docker host before building/starting Docker Image/Container:
 #   a)  Raspberry Pi3..5 running Ubuntu and Docker installed.
+#       /dev/vchiq 
 #   b)  That '$ xhost local:docker' is started before the container is started. 
 #       To enable GUI/X11 applications inside the container
 #
@@ -49,6 +50,7 @@ LABEL version="1.0"
 SHELL ["/bin/bash", "-c"]
 
 # Setup Docker user "pet" for access to i2c and GPIO
+# - Ubuntu 20.04 via OSRF using
 # - Ubuntu 20.04/22.04/24.04 using group: dailout, video
 # - RaspianOS using groups: spi,i2c,gpio
 # Group 'dialout' => ls -la /dev/gpiomem   {Note! Part of the '/dev/mem' that is used for the gpio}
@@ -86,7 +88,8 @@ RUN apt-get update -y &&\
 # Install 'i2c-tools' I2C-required software, including '$ i2cdetect'
 # Install 'gpiod' GPIO-nice-to-have-tool, including '$ gpioinfo'
 # Install 'net-tool' LAN-nice-to-have-tool, including '$ ifconfig'
-# Install 'libraspberrypi-bin' tool view VideoCore GPU information on the Raspberry Pi, including $ 
+# Install 'libraspberrypi-bin' tool view VideoCore GPU information on the Raspberry Pi, including '$ vcgencmd'
+USER root
 USER root
 RUN apt-get update -y &&\
     apt-get install -y \
@@ -133,7 +136,8 @@ RUN pip3 install --break-system-packages \
          adafruit-circuitpython-ads1x15 \
          adafruit-circuitpython-ina219 \
          adafruit-circuitpython-mpu6050 \
-         adafruit-circuitpython-vl53l1x 
+         adafruit-circuitpython-vl53l1x \
+         RaspberryPiVcgencmd
 
 # Stuff...
 USER ${DOCKERUSER}
@@ -142,9 +146,9 @@ RUN echo "Created this file so I do not get the annoying messages 'To run a comm
 
 # Adding stuff to existing >> $~/.bashrc
 USER ${DOCKERUSER}
-RUN echo '\n# Setting up my own fancy Terminal Prompt :-)'                  >> ${HOMEDIR}/.bashrc &&\
+RUN echo '# Setting up my own fancy Terminal Prompt :-)'                    >> ${HOMEDIR}/.bashrc &&\
     echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc &&\
-    echo '\n# Setting up alias for sourcing ROS2'                           >> ${HOMEDIR}/.bashrc &&\
+    echo '# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
     echo "alias $ROS_DISTRO='source /opt/ros/$ROS_DISTRO/setup.bash'"       >> ${HOMEDIR}/.bashrc &&\
     echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc
 
