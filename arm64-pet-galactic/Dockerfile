@@ -96,6 +96,7 @@ RUN apt-get update -y &&\
 USER root
 RUN apt-get update -y &&\
     apt-get install -y \
+        python3-pip \
         i2c-tools \
         net-tools \
         libraspberrypi-bin \
@@ -135,7 +136,7 @@ RUN echo '# Setting up my own fancy Terminal Prompt :-)'                  >> ${H
     echo 'source /opt/ros/galactic/setup.bash'                              >> /home/pet/.bashrc &&\
     echo "alias noetic='source /opt/ros/noetic/setup.bash'"                 >> ${HOMEDIR}/.bashrc &&\
     echo "alias galactic='source /opt/ros/galactic/setup.bash'"             >> ${HOMEDIR}/.bashrc &&\
-    echo "alias pet_source='source ${HOMEDIR}/ws_ros2-galactic/install/setup.bash'" >> ${HOMEDIR}/.bashrc
+    echo "alias pet_source='source ${HOMEDIR}/ws_ros2/install/setup.bash'"  >> ${HOMEDIR}/.bashrc
 
 # Setup exit conditions
 USER ${DOCKERUSER}
