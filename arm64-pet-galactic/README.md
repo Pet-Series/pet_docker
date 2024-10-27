@@ -9,7 +9,7 @@ ROS2-docker repository in the https://github.com/Pet-Series Git-Organizations.</
 
 - FROM ```osrf/ros:galactic-ros1-bridge-focal``` (arm64/Raspberry Pi 4/5)
     - Ubuntu 20.04.6 LTS aarch64 (aka. "Focal Fossa")
-    - ROS2 Galatic Geoclone (deprectaded/no longer supported after November 2022)
+    - ROS2 Galactic Geoclone(deprectaded/no longer supported after November 2022)
       - https://docs.ros.org/en/galactic/
     - ROS1 Noetic Ninjemys
       - https://wiki.ros.org/noetic
