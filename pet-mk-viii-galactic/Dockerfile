@@ -16,16 +16,21 @@
 #   --detach \
 #   --network=host \
 #   --privileged \
-#   --volume /home/pi/ws_ros2-galactic:/home/pet/ws_ros2 \
+#   --volume /home/pi/ws_ros2:/home/pet/ws_ros2 \
 #   --volume /tmp/.X11-unix:/tmp/.X11-unix \
 #   --env DISPLAY=${DISPLAY} \
 #   --env HOSTUSER=$USER \
-#   --name pet-mk-viii-runtime-galactic_container \
-#   --device /dev/gpiomem:/dev/gpiomem \
-#   --device /dev/i2c-1:/dev/i2c-1 \
-#   --device /dev/spidev0.0:/dev/spidev0.0 \
-#   --device /dev/spidev0.1:/dev/spidev0.1 \
-#   kullken/ros2_arm64v8:pet-mk-viii-runtime-galactic /bin/bash
+#   --name pet-mk-viii-galactic_container \
+#   --device=/dev/gpiomem:rw \
+#   --device=/dev/mem:rw \
+#   --device=/dev/i2c-1:rw \
+#   --device=/dev/spidev0.0:rw  \
+#   --device=/dev/spidev0.1:rw \
+#   --device=/dev/vchiq:r \
+#   kullken/ros2_arm64v8:pet-mk-viii-galactic /bin/bash
+#----------------------
+# Prerequisit: Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2/src
+#
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # Licens: MIT
@@ -43,9 +48,9 @@
 FROM  kullken/ros2_arm64v8:pet-base-galactic
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
-ENV DOCKERPROMPT="Pet-Mk.VIII[Galactic]"
+ENV DOCKERPROMPT="Pet-Mk.VIII[galactic]"
 
-LABEL description="ROS2 Galactic image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
+LABEL description="ROS2 galactic image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.0"
 

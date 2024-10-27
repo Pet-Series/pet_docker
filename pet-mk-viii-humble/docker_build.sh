@@ -1,16 +1,20 @@
 #!/bin/bash
-# Build Dockerfile in current directory = '/home/sk/ws_ros2/src/pet_docker/pet-mk-viii-runtime-humble'
+# Build Dockerfile in current directory = '/home/sk/ws_ros2/src/pet_docker/pet-mk-viii-humble'
+#
+# Prerequisite - On docker host: 
+#       I)  That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications inside the container
+#       II) Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2/src
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
-# "humble"= ROS2
-# "focal"  = Ubuntu 20.04 
+#  - ROS2 version: ROS2/humble(arm64v8)
+#  - OS version:   Ubuntu 22.04/jammy(arm64v8)
 #
 # More info: 
-#    - https://github.com/Pet-Series/pet_docker
-#    - https://hub.docker.com/repositories/kullken
-#    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-#    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-docker build --tag kullken/ros2_arm64v8:pet-mk-viii-humble .
+#  - https://github.com/Pet-Series/pet_docker
+#  - https://hub.docker.com/repositories/kullken
+#  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
+#  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+docker build --tag kullken/ros2_arm64v8:pet-mk-viii-humble --no-cache .

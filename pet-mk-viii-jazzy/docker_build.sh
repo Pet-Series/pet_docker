@@ -1,12 +1,13 @@
 #!/bin/bash
-# Start new bash/terminal in existing custom Docker Container.
+# Build Docker Image from ./Dockerfile  in the same directory.
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
-#  II) Docker Container with name 'pet-base-jazzy_container' is Up or Paused.
+#  II) This build is on top of Docker Image kullken/ros2_arm64v8:pet-base-jazzy
+#
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# License: MIT
+# Licens: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)
@@ -18,8 +19,6 @@
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
 #
-docker exec \
-    --interactive \
-    --tty \
-    pet-base-jazzy_container \
-    bash
+# docker build --tag kullken/ros2_arm64v8:pet-mk-viii-jazzy --no-cache .
+# docker build --tag kullken/ros2_arm64v8:pet-mk-viii-jazzy --progress=plain .
+docker build --tag kullken/ros2_arm64v8:pet-mk-viii-jazzy --no-cache .

@@ -9,7 +9,7 @@
 # $ docker compose up --detach --build
 #
 # Connect shell/bash by: 
-# $ docker exec -it pet-mk-viii-runtime-galactic_container bash
+# $ docker exec -it pet-mk-viii-galactic_container bash
 #
 #----------------------
 # Maintainer: stefan.kull@gmail.com
@@ -27,10 +27,10 @@
 services:
   ros2:
     build: .
-    image: kullken/ros2_arm64v8:pet-mk-v-runtime-galactic
-    container_name: pet-mk-viii-runtime-galactic_container
+    image: kullken/ros2_arm64v8:pet-mk-viii-galactic
+    container_name: pet-mk-viii-galactic_container
     labels:
-      - "se.pet-series.description=ROS2 Galatic for Pet-Mk.VIII (aka.'Dashboard')"
+      - "se.pet-series.description=ROS2 galactic for Pet-Mk.VIII (aka.'Dashboard')"
     privileged: true
     devices:
     #- "/dev/ttyUSB0:/dev/ttyUSB0"     # USB
@@ -41,7 +41,7 @@ services:
     - "/dev/spidev0.1:/dev/spidev0.1" # SPI.1
     network_mode: host
     volumes:
-    - /home/pi/ws_ros2-galactic:/home/pet/ws_ros2-galactic:rw
+    - /home/pi/ws_ros2:/home/pet/ws_ros2:rw
     - /tmp/.X11-unix:/tmp/.X11-unix:rw
     - /etc/localtime:/etc/localtime:ro
     stdin_open: true # docker run -i

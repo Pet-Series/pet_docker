@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build Docker Image from ./Dockerfile in current directory = '/home/${USER}/ws_ros2/src/pet_docker/pet-mk-viii-runtime-humble'
+# Build Docker Image from ./Dockerfile in current directory = '/home/${USER}/ws_ros2/src/pet_docker/pet-mk-viii-humble'
 #
 # Prerequisite - On docker host: 
 #       I)  That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications inside the container
@@ -17,4 +17,4 @@
 #    - https://hub.docker.com/repositories/kullken
 #    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
-docker build --tag kullken/ros2_arm64v8:pet-mk-viii-runtime-galactic .
+docker build --tag kullken/ros2_arm64v8:pet-mk-viii-galactic .

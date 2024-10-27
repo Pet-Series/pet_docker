@@ -1,7 +1,7 @@
 # This is an ./Dockerfile for my custom Docker 'Overlay' Image
-#   Level 0) Docker 'Source' Image   = arm64v8/ros:humble-ros-base-jammy
-#   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-humble 
-#   Level 3) Docker 'Overlay' Image  = kullken/ros2_arm64v8:pet-mk-viii-humble <-This ./Dockerfile
+#   Level 0) Docker 'Source' Image   = arm64v8/ros:jazzy-ros-base-noble
+#   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-jazzy
+#   Level 3) Docker 'Overlay' Image  = kullken/ros2_arm64v8:pet-mk-viii-jazzy <-This Image
 # 
 # Description:
 #   Target hardware platform: Pet-Mk.VIII(aka. "Dashboard") running using a Raspberry PI[arm64v8].
@@ -26,44 +26,44 @@
 # License: MIT
 # https://github.com/Pet-Series
 #
-#  - ROS2 version: ROS2/humble(arm64v8)
-#  - OS version:   Ubuntu 22.04/jammy(arm64v8)
+#  - ROS2 version: ROS2/jazzy(arm64v8)
+#  - OS version:   Ubuntu 24.04/noble(arm64v8)
 #
 # More info: 
 #  - https://github.com/Pet-Series/pet_docker
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-#  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+#  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
 
-FROM  kullken/ros2_arm64v8:pet-base-humble 
+FROM  kullken/ros2_arm64v8:pet-base-jazzy
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
-ENV DOCKERPROMPT="Pet-Mk.VIII[humble]"
+ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
+ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
+ENV DOCKERPROMPT="Pet-Mk.VIII[jazzy]"
 
-LABEL description="Custom ROS2 Humble Overlay Docker Image for Pet-Mk.VIII (aka. 'Dashboard')"
+LABEL description="Custom ROS2 jazzy image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.1"
-SHELL ["/bin/bash", "-c"]
 
 # Add custom shell-prompt for this Docker Image to ~/.bashrc
 USER ${DOCKERUSER}
-RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> /home/pet/.bashrc 
+RUN echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> /home/pet/.bashrc
 
 # Recreate/Pre-load the '.bash_history' in the bash-terminal
 USER root
-WORKDIR ${HOMEDIR}
 COPY .bash_history ${HOMEDIR}/.bash_history
 RUN chmod 600 ${HOMEDIR}/.bash_history &&\
     chown ${DOCKERUSER} ${HOMEDIR}/.bash_history &&\
     chgrp ${DOCKERUSER} ${HOMEDIR}/.bash_history 
 
 # Put the Docker 'ros_entrypoint.sh' bash script in place...
-COPY ./ros_entrypoint.sh ${HOMEDIR}/ros_entrypoint.sh 
 USER root
-RUN chmod +x ${HOMEDIR}/ros_entrypoint.sh && \
-    chown ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh &&\
-    chgrp ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh
-    
+COPY ros-entrypoint.sh ${HOMEDIR}/ros_entrypoint.sh
+RUN chown ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh &&\
+    chgrp ${DOCKERUSER} ${HOMEDIR}/ros_entrypoint.sh &&\
+    chmod 755 ${HOMEDIR}/ros_entrypoint.sh
+
 # Setup exit conditions
 # ENTRYPOINT instruction is used to configure the executables that will always run after the container is initiated (not by '$ docker exec')
 USER ${DOCKERUSER}

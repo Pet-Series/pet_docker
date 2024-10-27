@@ -20,10 +20,11 @@
 #    - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #    - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
 docker run \
-    -it \
+    --interactive \
+    --tty \
     --network host \
     --privileged \
-    --volume /home/pi/ws_ros2-galactic:/home/pet/ws_ros2 \
+    --volume /home/pi/ws_ros2:/home/pet/ws_ros2:rw \
     --volume /tmp/.X11-unix:/tmp/.X11-unix:rw \
     --volume="/etc/localtime:/etc/localtime:ro" \
     --env DISPLAY=${DISPLAY} \
@@ -33,4 +34,5 @@ docker run \
     --device /dev/i2c-1:/dev/i2c-1 \
     --device /dev/spidev0.0:/dev/spidev0.0 \
     --device /dev/spidev0.1:/dev/spidev0.1 \
-    kullken/ros2_arm64v8:pet-mk-viii-runtime-galactic /bin/bash
+    --device=/dev/vchiq:r \
+    kullken/ros2_arm64v8:pet-mk-viii-galactic /bin/bash
