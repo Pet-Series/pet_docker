@@ -18,11 +18,11 @@
 # - OS version:   Ubuntu 24.04/noble(arm64v8)
 #
 # More info: 
-# More info: 
 #  - https://github.com/Pet-Series/pet_docker
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+
 docker run \
     --interactive \
     --tty \
@@ -31,6 +31,7 @@ docker run \
     --privileged \
     --annotation="Annotation to the container (passed through to the OCI runtime)" \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
+    --volume="/etc/localtime:/etc/localtime:ro" \
     --env DISPLAY=$DISPLAY \
     --env HOSTUSER=$USER \
     --device=/dev/gpiomem:rw \
@@ -38,4 +39,5 @@ docker run \
     --device=/dev/spidev0.0:rw  \
     --device=/dev/spidev0.1:rw \
     --device=/dev/vchiq:r \
+    --name pet-base-jazzy_container \
     kullken/ros2_arm64v8:pet-base-jazzy

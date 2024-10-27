@@ -56,12 +56,10 @@ services:
       - /dev/spidev0.0:/dev/spidev0.0:rw # SPI.0
       - /dev/spidev0.1:/dev/spidev0.1:rw # SPI.1
       - /dev/vchiq:/dev/vchiq:ro         # CPU/Broadcom-core stuff...
-
     volumes:
       - /home/pi/ws_ros2:/home/pet/ws_ros2:rw   # Shared developing/source code folder.
       - /etc/localtime:/etc/localtime:ro        # Sync docker image/container date & timezone with docker-host
       - /proc/device-tree:/proc/device-tree:ro  # Broadcom/CPU-core stuff...
-     # - /lib:/lib:ro
       - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro  # Broadcom/CPU-core stuff...
     stdin_open: true # docker run -i
     tty: true        # docker run -t

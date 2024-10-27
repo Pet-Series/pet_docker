@@ -5,7 +5,7 @@
 #       I) That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications in the container
 #----------------------
 # Commands:
-#   1)  Enable X11 from inside the Docker Image/Container
+#   1)  Enable x11 gui from inside the Docker Image/Container
 #       $ xhost local:docker
 #
 #   2a) Create/Start Container from Image : 

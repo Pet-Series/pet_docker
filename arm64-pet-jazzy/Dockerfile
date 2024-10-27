@@ -41,11 +41,11 @@ ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
 ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
 ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
-ENV DOCKERPROMPT="Pet-Base-jazzy"
+ENV DOCKERPROMPT="Pet-Base[jazzy]"
 
 LABEL description="Custom ROS2 jazzy base (Ubuntu 24.04) image for RaspberryPI(arm64) with support for hardware access like I2C, GPIO and SPI."
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
-LABEL version="1.0"
+LABEL version="2.0"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -89,7 +89,6 @@ RUN apt-get update -y &&\
 # Install 'gpiod' GPIO-nice-to-have-tool, including '$ gpioinfo'
 # Install 'net-tool' LAN-nice-to-have-tool, including '$ ifconfig'
 # Install 'libraspberrypi-bin' tool view VideoCore GPU information on the Raspberry Pi, including '$ vcgencmd'
-USER root
 USER root
 RUN apt-get update -y &&\
     apt-get install -y \
