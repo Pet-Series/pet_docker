@@ -1,4 +1,4 @@
-# This is an ./Dockerfile for my custom Docker 'Overlay' Image
+# This is an ./Dockerfile for my custom Docker 'Base' Image
 #   Level 0) Docker 'Source' Image   = arm64v8/ros:jazzy-ros-base-noble
 #   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-jazzy <-This Image
 #   Level 3) Docker 'Overlay' Image  = n/a 
@@ -36,14 +36,21 @@
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
 
 FROM arm64v8/ros:jazzy-ros-base-noble
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENV DOCKERUSER="pet"
+ARG ROS_DISTRO="jazzy"
+ARG DOCKERPROMPT="Pet-Base[${ROS_DISTRO}]"
+
+ARG DOCKERUSER="pet"
+ARG DOCKERUSER_UID=1000
+ARG DOCKERUSER_GID=$DOCKERUSER_UID
 ENV HOMEDIR="/home/${DOCKERUSER}"
-ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
-ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
-ENV DOCKERPROMPT="Pet-Base-jazzy"
 
-LABEL description="Custom ROS2 jazzy base (Ubuntu 24.04) image for RaspberryPI(arm64) with support for hardware access like I2C, GPIO and SPI."
+# # Setup a Python3 virtual environment 
+# ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
+# ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
+
+LABEL description="Custom ROS2 ${ROS_DISTRO} base (Ubuntu 24.04) image for RaspberryPI(arm64) with support for hardware access like I2C, GPIO and SPI."
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.0"
 
@@ -62,41 +69,48 @@ SHELL ["/bin/bash", "-c"]
 
 # Remove Ubuntu/Image default user = 1000:1000 with name 'ubuntu'
 # Create new user = 1000:1000 with name '${DOCKERUSER}' 
+
+
+# Check if "ubuntu" user exists, delete it if it does, then create the desired user
 USER root
-RUN userdel --remove ubuntu
+RUN if getent passwd ubuntu > /dev/null 2>&1; then \
+        userdel --remove ubuntu && \
+        echo ">>>>Deleted existing ubuntu user"; \
+    fi && \
+    useradd \
+        --uid ${DOCKERUSER_UID} \
+        --gid ${DOCKERUSER_GID} \
+        --shell /bin/bash \
+        --create-home \
+        --home-dir ${HOMEDIR} \
+        --user-group \
+        --groups adm,dialout,sudo,video,audio,plugdev,dip \
+        --password d0cker \
+        ${DOCKERUSER} && \
+    echo ">>>>reated new user $USERNAME"
 
-RUN useradd \
-    --uid 1000 \
-    --shell /bin/bash \
-    --home-dir ${HOMEDIR} \
-    --create-home \
-    --user-group \
-    --groups adm,dialout,sudo,video,audio,plugdev,dip \
-    ${DOCKERUSER}
-RUN echo "${DOCKERUSER}:d0cker" | chpasswd
+# Add sudo support for the non-root user
+RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${DOCKERUSER}\
+  && chmod 0440 /etc/sudoers.d/${DOCKERUSER} \
+  && rm -rf /var/lib/apt/lists/*
 
-# Install 'neofetch' nice-to-have-tool that shows os/linux info + ASCII-art stuff.
 # Install 'nano' nice-to-have-tool as text editor
-USER root
-RUN apt-get update -y &&\
-    apt-get install -y neofetch &&\
-        echo '# Launch "neofetch" in each terminal' >> /home/pet/.bashrc &&\
-        echo 'neofetch' >> /home/pet/.bashrc &&\
-    apt-get install -y nano &&\
-    rm -rf /var/lib/apt/lists/*
-
 # Install 'i2c-tools' I2C-required software, including '$ i2cdetect'
 # Install 'gpiod' GPIO-nice-to-have-tool, including '$ gpioinfo'
 # Install 'net-tool' LAN-nice-to-have-tool, including '$ ifconfig'
 # Install 'libraspberrypi-bin' tool view VideoCore GPU information on the Raspberry Pi, including '$ vcgencmd'
+# Install 'neofetch' nice-to-have-tool that shows os/linux info + ASCII-art stuff.
 USER root
-USER root
-RUN apt-get update -y &&\
-    apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        nano \
         i2c-tools \
         net-tools \
         libraspberrypi-bin \
         gpiod &&\
+    apt-get install -y \
+        neofetch &&\
+        echo '# Launch "neofetch" in each terminal' >> /home/pet/.bashrc &&\
+        echo 'neofetch' >> /home/pet/.bashrc &&\
     rm -rf /var/lib/apt/lists/*
 
 # Install Python3 extensions for I2C, GPIO and SPI
@@ -104,8 +118,9 @@ RUN apt-get update -y &&\
 #         due to risk of introducing dependencies mismatch when using '$ pip3 install'
 USER root
 RUN apt-get update -y &&\
-    apt-get install -y --upgrade python3-setuptools &&\
-    apt-get install -y \
+    apt-get install -y --upgrade \
+        python3-setuptools &&\
+    apt-get install -y --no-install-recommends\
         pipx \
         python3-pip \
         python3-lgpio \
@@ -115,16 +130,17 @@ RUN apt-get update -y &&\
         python3-venv &&\
         rm -rf /var/lib/apt/lists/*
 
-# Setup a local ROS2 Workspace in local Docker file system
+# # Setup a local ROS2 Workspace in local Docker file system
 # USER ${DOCKERUSER}
 # RUN mkdir -p ${WS_LOCAL}/src
 # RUN cd ${WS_LOCAL}
-# RUN /bin/bash -c "source /opt/ros/jazzy/setup.bash; colcon build --symlink-install"
-# Setup a Python3 virtual environment in the local ROS2 workspace
+# RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash; colcon build --symlink-install"
+
+# # Setup a Python3 virtual environment in the local ROS2 workspace
 # USER ${DOCKERUSER}
 # RUN python3 -m venv --system-site-packages ${VIRTUAL_ENV}
-# # RUN echo "Colcon (ROS2) should not try to build this directory ($VIRTUAL_ENV)" > ${VIRTUAL_ENV}/COLCON_IGNORE
-# # source ./venv/bin/activate
+# RUN echo "Colcon (ROS2) should not try to build this directory ($VIRTUAL_ENV)" > ${VIRTUAL_ENV}/COLCON_IGNORE
+# source ./venv/bin/activate
 # ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 # Install Python3 extensions/libraries for I2C, GPIO + Drivers for sensors/actuators
@@ -149,10 +165,11 @@ USER ${DOCKERUSER}
 RUN echo '# Setting up my own fancy Terminal Prompt :-)'                    >> ${HOMEDIR}/.bashrc &&\
     echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc &&\
     echo '# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
-    echo "alias $ROS_DISTRO='source /opt/ros/$ROS_DISTRO/setup.bash'"       >> ${HOMEDIR}/.bashrc &&\
+    echo "alias ${ROS_DISTRO}='source /opt/ros/${ROS_DISTRO}/setup.bash'"   >> ${HOMEDIR}/.bashrc &&\
     echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc
 
 # Setup exit conditions
+ENV DEBIAN_FRONTEND=
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 CMD ["/bin/bash"]
