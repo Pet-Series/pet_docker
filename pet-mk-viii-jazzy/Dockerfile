@@ -1,7 +1,11 @@
 # This is an ./Dockerfile for my custom Docker 'Overlay' Image
-#   Level 0) Docker 'Source' Image   = arm64v8/ros:jazzy-ros-base-noble
-#   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-jazzy
-#   Level 3) Docker 'Overlay' Image  = kullken/ros2_arm64v8:pet-mk-viii-jazzy <-This Image
+#   Level 1) Docker 'Source' Image
+#            1.1 FROM ubuntu:noble
+#            1.2 FROM arm64v8/ros:jazzy-ros-base-noble
+#   Level 2) Docker 'Base' Image     
+#            2.0 FROM kullken/ros2_arm64v8:pet-base-jazzy
+#   Level 3) Docker 'Overlay' Image
+#            3.0  This Image = kullken/ros2_arm64v8:pet-mk-viii-jazzy 
 # 
 # Description:
 #   Target hardware platform: Pet-Mk.VIII(aka. "Dashboard") running using a Raspberry PI[arm64v8].
@@ -42,7 +46,7 @@ ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
 ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
 ENV DOCKERPROMPT="Pet-Mk.VIII[jazzy]"
 
-LABEL description="Custom ROS2 jazzy image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
+LABEL description="Custom ROS2 jazzy overlay image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
 LABEL version="1.1"
 

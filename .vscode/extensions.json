@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker-british-english",
+        "ms-azuretools.vscode-docker",
+        "mhutchie.git-graph",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.remote-explorer",
+        "ms-vscode-remote.remote-ssh-edit",
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-containers"
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:pet_docker}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    },
+    "cSpell.language": "en-GB,en",
+    "cSpell.enableFiletypes": [
+        "cmake",
+        "dockercompose",
+        "dockerfile"
+    ],
+    "cSpell.enabled": true
+}
