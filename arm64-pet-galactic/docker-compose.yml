@@ -46,7 +46,8 @@
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=noetic
 
-  ros2:
+services:
+  ros1-2:
     build: .
     image: kullken/ros2_arm64v8:pet-base-galactic
     container_name: pet-base-galactic_container
@@ -67,7 +68,7 @@
       - /dev/vchiq:/dev/vchiq:ro         # Broadcom/CPU-core stuff...
 
     volumes:
-      - /home/pi/ws_ros2:/home/pet/ws_ros2:rw   # Shared developing/source code folder.
+      - /home/pi/ws_ros2-galactic:/home/pet/ws_ros2:rw   # Shared developing/source code folder.
       - /etc/localtime:/etc/localtime:ro        # Sync docker image/container date & timezone with docker-host
       - /proc/device-tree:/proc/device-tree:ro  # Broadcom/CPU-core stuff...
       - /usr/bin/vcgencmd:/usr/bin/vcgencmd:ro  # Broadcom/CPU-core stuff...
