@@ -1,4 +1,12 @@
 # This is an ./Dockerfile for my custom Docker 'Base' Image
+#   Level 1) Docker 'Source' Image
+#            1.1 FROM ubuntu:noble
+#            1.2 FROM arm64v8/ros:jazzy-ros-base-noble
+#   Level 2) Docker 'Base' Image     
+#            2.0 This Image = kullken/ros2_arm64v8:pet-base-jazzy
+#   Level 3) Docker 'Overlay' Image
+#            3.0 n/a 
+# This is an ./Dockerfile for my custom Docker 'Base' Image
 #   Level 0) Docker 'Source' Image   = arm64v8/ros:jazzy-ros-base-noble
 #   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-jazzy <-This Image
 #   Level 3) Docker 'Overlay' Image  = n/a 
