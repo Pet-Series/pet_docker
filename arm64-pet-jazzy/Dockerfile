@@ -47,19 +47,19 @@ FROM arm64v8/ros:jazzy-ros-base-noble
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG ROS_DISTRO="jazzy"
-ARG DOCKERPROMPT="Pet-Base[${ROS_DISTRO}]"
+ARG DOCKERPROMPT="Pet+Base[${ROS_DISTRO}]"
 
 ARG DOCKERUSER="pet"
-ARG DOCKERUSER_UID=1000
+ARG DOCKERUSER_UID=2000
 ARG DOCKERUSER_GID=$DOCKERUSER_UID
 ENV HOMEDIR="/home/${DOCKERUSER}"
-ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
-ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
+# ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
+# ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
 ENV DOCKERPROMPT="Pet-Base[jazzy]"
 
 LABEL description="Custom ROS2 ${ROS_DISTRO} base (Ubuntu 24.04) image for RaspberryPI(arm64) with support for hardware access like I2C, GPIO and SPI."
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
-LABEL version="2.0"
+LABEL version="2.1"
 
 SHELL ["/bin/bash", "-c"]
 
@@ -74,19 +74,13 @@ SHELL ["/bin/bash", "-c"]
 # Group 'video'   => ls -la /dev/vchiq
 # Group 'dialout' => ls -la /dev/gpiochip*  {Note! Differs from RPi3 -> RPi4 -> RPi5} 
 
-# Remove Ubuntu/Image default user = 1000:1000 with name 'ubuntu'
-# Create new user = 1000:1000 with name '${DOCKERUSER}' 
-
+# By default the default Ubuntu/Image default user = 1000:1000 with name 'ubuntu'
+# Create new user = 2000:2000 with name 'pet'
 
 # Check if "ubuntu" user exists, delete it if it does, then create the desired user
 USER root
-RUN if getent passwd ubuntu > /dev/null 2>&1; then \
-        userdel --remove ubuntu && \
-        echo ">>>>Deleted existing ubuntu user"; \
-    fi && \
-    useradd \
+RUN useradd \
         --uid ${DOCKERUSER_UID} \
-        --gid ${DOCKERUSER_GID} \
         --shell /bin/bash \
         --create-home \
         --home-dir ${HOMEDIR} \
@@ -94,12 +88,12 @@ RUN if getent passwd ubuntu > /dev/null 2>&1; then \
         --groups adm,dialout,sudo,video,audio,plugdev,dip \
         --password d0cker \
         ${DOCKERUSER} && \
-    echo ">>>>reated new user $USERNAME"
+    echo "${DOCKERUSER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${DOCKERUSER} &&\
+    echo ">>>>Created new user $USERNAME"
 
 # Add sudo support for the non-root user
-RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${DOCKERUSER}\
-  && chmod 0440 /etc/sudoers.d/${DOCKERUSER} \
-  && rm -rf /var/lib/apt/lists/*
+RUN echo "${DOCKERUSER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${DOCKERUSER} &&\
+    chmod 0440 /etc/sudoers.d/${DOCKERUSER}
 
 # Install 'nano' nice-to-have-tool as text editor
 # Install 'i2c-tools' I2C-required software, including '$ i2cdetect'
@@ -161,7 +155,7 @@ RUN pip3 install --break-system-packages \
          adafruit-circuitpython-vl53l1x \
          RaspberryPiVcgencmd
 
-# Stuff...
+# Created this file so I do not get the annoying messages 'To run a command as administrator...'
 USER ${DOCKERUSER}
 WORKDIR ${HOMEDIR}
 RUN echo "Created this file so I do not get the annoying messages 'To run a command as administrator...'" > ~/.sudo_as_admin_successful
@@ -172,7 +166,8 @@ RUN echo '# Setting up my own fancy Terminal Prompt :-)'                    >> $
     echo 'export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;37;44m\]🐳${DOCKERPROMPT}\[\033[00m\]_\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\\$ "' >> ${HOMEDIR}/.bashrc &&\
     echo '# Setting up alias for sourcing ROS2'                             >> ${HOMEDIR}/.bashrc &&\
     echo "alias ${ROS_DISTRO}='source /opt/ros/${ROS_DISTRO}/setup.bash'"   >> ${HOMEDIR}/.bashrc &&\
-    echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc
+    echo "alias pet_source='source /home/pet/ws_ros2/install/setup.bash'"   >> ${HOMEDIR}/.bashrc &&\
+    echo "alias build='cd ~/ws_ros2 && colcon build --symlink-install'"     >> ${HOMEDIR}/.bashrc
 
 # Setup exit conditions
 ENV DEBIAN_FRONTEND=

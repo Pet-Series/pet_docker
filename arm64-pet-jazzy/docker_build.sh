@@ -20,9 +20,10 @@
 #
 # docker build --tag kullken/ros2_arm64v8:pet-base-jazzy --no-cache .
 # docker build --tag kullken/ros2_arm64v8:pet-base-jazzy --progress=plain .
+
 docker build \
     --tag kullken/ros2_arm64v8:pet-base-jazzy \
-    --annotation "index,manifest,manifest-descriptor:note=Custom Ubuntu/ROS2 Jazzyn Image for my robots..." \
+    --annotation "index,manifest,manifest-descriptor:note=Custom Ubuntu/ROS2 Jazzy Image for my robots..." \
     --platform linux/arm64 \
     --no-cache \
-    .  &> docker_build.log
+    . # &> docker_build.log

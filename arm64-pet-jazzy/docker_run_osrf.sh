@@ -1,11 +1,11 @@
 #!/bin/bash
-# Launch out-of-the-box OSRF ROS2/Ubuntu Docker Image for RasperryPI(arm64)
-#  - Enabeling access to host hardware, like I2C, GPIO and SPI from inside the Docker container.
-#  - Enabeling access x11 gui from inside the Docker container.
+# Launch out-of-the-box OSRF ROS2/Ubuntu Docker 'Source' Image for Raspberry PI(arm64)
+#  - Enabling access to host hardware, like I2C, GPIO and SPI from inside the Docker container.
+#  - Enabling access x11 gui from inside the Docker container.
 #
 # Expectations:
-#  - Inside Image/Container: Run as user 'ubuntu' 1000:1000
-#  - Run out-of-the-box Ubuntu/ROS2 image from osrf.
+#  - Inside Image 'Source' Container: Run as user 'ubuntu' 1000:1000
+#  - Run out-of-the-box Ubuntu/ROS2 image from OSRF.
 #  - All low-level hardware pass-through should be enabled for testing.
 #  - To allow x11 gui access from inside the Docker container: Run the command
 #    $ xhost local:docker
@@ -21,6 +21,7 @@
 # More info: 
 #  - https://hub.docker.com/r/arm64v8/ros/tags
 #  - https://hub.docker.com/r/arm64v8/ros/tags?name=jazzy
+
 docker run \
     --interactive \
     --tty \
