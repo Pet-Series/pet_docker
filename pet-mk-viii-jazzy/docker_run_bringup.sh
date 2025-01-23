@@ -1,14 +1,23 @@
 #!/bin/bash
-# Run docker image from https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
-# Default ENTRYPOINT 'CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]'
+# Run Custom Docker 'Overlay' Image + Create Docker Container on a Raspberry PI(arm64)
 #
-# Prerequisite - On docker host: 
-#       I)  That '$ xhost local:docker' is started before the container is started. To enable GUI/X11 applications inside the container
-#       II) Docker host must clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2-jazzy/src
+# Expectations:
+#  - Run our own custom Docker 'Overlay' Image.
+#  - Inside the Docker Container, the user ID is 2000:2000 'pet'
+#  - Enabling access to RPi host hardware, like I2C, GPIO and SPI from inside the Docker 'Overlay' container.
+#  - All low-level libraries for hardware access on Raspberry Pi should be installed
+#  - Enabling access x11 gui from inside the Docker container.
+#  - Expose Docker Host ROS2 Workspace-folder '/home/pet/ws_ros2' as '/home/pet/ws_ros2_$ROS_DISTRO'
+#  - Default ENTRYPOINT 'CMD ["ros2", "launch", "pet_mk_viii", "pet-mk-viii-bringup.launch.py"]'
+#
+# Prerequisite - On docker host:
+#       I)  To enable GUI/X11 applications inside the container
+#           That '$ xhost local:docker' is started before the container is started.
+#       II) On docker host must $ git clone https://github.com/Pet-Series/Pet-Mk-VIII.git => /home/pet/ws_ros2-jazzy/src
 #
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
 #  - ROS2 version: ROS2/jazzy(arm64v8)
@@ -16,21 +25,27 @@
 #
 # More info: 
 #  - https://github.com/Pet-Series/pet_docker
+#  - https://github.com/Pet-Series/Pet-Mk-VIII
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+
+ROS_DISTRO="jazzy"
+HOST_WS=$HOME/ws_ros2_$ROS_DISTRO
+CONTAINER_WS=/home/pet/ws_ros2
 docker run \
     -it \
     --detach \
     --network host \
     --privileged \
-    --volume /home/pi/ws_ros2:/home/pet/ws_ros2 \
+    --volume $HOST_WS:$CONTAINER_WS \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
     --env DISPLAY=$DISPLAY \
     --env HOSTUSER=$USER \
-    --name pet-mk-viii-runtime-jazzy_container \
-    --device /dev/gpiomem:/dev/gpiomem \
-    --device /dev/i2c-1:/dev/i2c-1 \
-    --device /dev/spidev0.0:/dev/spidev0.0 \
-    --device /dev/spidev0.1:/dev/spidev0.1 \
-    kullken/ros2_arm64v8:pet-mk-viii-jazzy
+    --device=/dev/gpiomem:rw \
+    --device=/dev/i2c-1:rw \
+    --device=/dev/spidev0.0:rw  \
+    --device=/dev/spidev0.1:rw \
+    --device=/dev/vchiq:r \
+    --name 'pet-mk-viii-'$ROS_DISTRO'_container' \
+    kullken/ros2_arm64v8:pet-mk-viii-$ROS_DISTRO

@@ -35,6 +35,7 @@
 #
 # More info: 
 #  - https://github.com/Pet-Series/pet_docker
+#  - https://github.com/Pet-Series/Pet-Mk-VIII
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
@@ -42,13 +43,13 @@
 FROM  kullken/ros2_arm64v8:pet-base-jazzy
 ENV DOCKERUSER="pet"
 ENV HOMEDIR="/home/${DOCKERUSER}"
-ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
-ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
+# ENV WS_LOCAL="${HOMEDIR}/ws_ros2-local"
+# ENV VIRTUAL_ENV="${WS_LOCAL}/venv"
 ENV DOCKERPROMPT="Pet-Mk.VIII[jazzy]"
 
 LABEL description="Custom ROS2 jazzy overlay image for Pet-Mk.VIII (aka. 'Dashboard') - Launch all basic ROS2 nodes"
 LABEL maintainer="Stefan Kull <stefan.kull@gmail.com>"
-LABEL version="1.1"
+LABEL version="2.1"
 
 # Add custom shell-prompt for this Docker Image to ~/.bashrc
 USER ${DOCKERUSER}
