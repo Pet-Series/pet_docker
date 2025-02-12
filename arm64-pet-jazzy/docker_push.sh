@@ -3,7 +3,7 @@
 #
 # Prerequisites:
 #   - docker login -u "kullken" -p "@@@@@@@@" docker.io
-#   - ...existing local Docker Image kullken/ros2_arm64v8:pet-base-jazzy
+#   - ...existing local Docker 'Base' Image kullken/ros2_arm64v8:pet-base-jazzy
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # License: MIT
@@ -17,4 +17,5 @@
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-docker push kullken/ros2_arm64v8:pet-base-jazzy
+
+docker push kullken/ros2_arm64v8:pet-base-jazzy     # Docker 'Base' Image

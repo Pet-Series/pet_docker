@@ -1,9 +1,11 @@
 #!/bin/bash
-# Docker Run based on ROS2 (ARM64v8 CPU Architecture)
+# Launch out-of-the-box OSRF ROS2/Ubuntu Docker 'Source' Image for Raspberry PI(arm64)
+#  - Enabling access to host hardware, like I2C, GPIO and SPI from inside the Docker container.
+#  - Enabling access x11 gui from inside the Docker container.
 #
 # Expectations:
 #  - Reuse User ID & Group ID from Docker-host system.
-#  - Run out-of-the-box Ubuntu/ROS2 image.
+#  - Run out-of-the-box Docker Ubuntu/ROS2 'Source' Image.
 #  - To allow x11 gui access from inside the Docker container: Run the command
 #    $ xhost local:docker
 #
@@ -16,8 +18,10 @@
 #  - OS version:   Ubuntu 24.04/noble(arm64v8)
 #
 # More info: 
+#  - https://github.com/Pet-Series/pet_docker
 #  - https://hub.docker.com/r/arm64v8/ros/tags
 #  - https://hub.docker.com/r/arm64v8/ros/tags?name=jazzy
+
 docker run \
     --interactive \
     --tty \

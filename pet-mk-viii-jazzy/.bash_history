@@ -3,7 +3,7 @@ source /opt/ros/jazzy/setup.bash
 source ~/venv/bin/activate
 ros2 run pet_ros2_joystick_pkg pet_joystick_node
 ros2 launch pet_mk_viii pet-mk-viii-bringup.launch.py
-colcon build --symlink-install
+cd ~/ws_ros2 && colcon build --symlink-install
 colcon list
 colcon graph
 env|grep ROS

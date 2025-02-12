@@ -1,14 +1,18 @@
 #!/bin/bash
-# Run custom ROS2/Ubuntu Docker Image&Container for RasperryPI(arm64v8 CPU Architecture)
-#  - Enabeling access to host hardware, like I2C, GPIO and SPI from inside the Docker container.
-#  - Enabeling access x11 gui from inside the Docker container.
+# Launch custom Docker 'Base' Image for Raspberry PI(arm64)
 #
 # Expectations:
-#   - Run our own custom Ubuntu/ROS2 image.
-#   - Inside the Docker Container, the user ID is 1000:1000 'pet'
-#   - To allow x11 gui access from inside the Docker container: Run the command
-#     $ xhost local:docker
-#   - All low-level libraries for hardware access on Raspebbry Pi should be installed
+#  - Run our own custom Docker 'Base' Image.
+#  - Inside the Docker Container, the user ID is 2000:2000 'pet'
+#  - Enabling access to host low-level-hardware, like I2C, GPIO and SPI from inside the Docker container.
+#  - All low-level libraries for hardware access on Raspberry Pi should be installed
+#  - Enabling access x11 gui from inside the Docker container.
+#  - Entrypoint CMD = /bin/bash 
+#
+# Prerequisite - On docker host:
+#       I)  To enable GUI/X11 applications inside the container
+#           That '$ xhost local:docker' is started before the container is started.
+#
 #----------------------
 # Maintainer: stefan.kull@gmail.com
 # License: MIT
@@ -23,6 +27,7 @@
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
 
+ROS_DISTRO="jazzy"
 docker run \
     --interactive \
     --tty \
@@ -31,13 +36,13 @@ docker run \
     --privileged \
     --annotation="Annotation to the container (passed through to the OCI runtime)" \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
-    --volume="/etc/localtime:/etc/localtime:ro" \
+    --volume /etc/localtime:/etc/localtime:ro \
     --env DISPLAY=$DISPLAY \
     --env HOSTUSER=$USER \
-    --device=/dev/gpiomem:rw \
-    --device=/dev/i2c-1:rw \
-    --device=/dev/spidev0.0:rw  \
-    --device=/dev/spidev0.1:rw \
-    --device=/dev/vchiq:r \
-    --name pet-base-jazzy_container \
-    kullken/ros2_arm64v8:pet-base-jazzy
+    --device /dev/gpiomem:rw \
+    --device /dev/i2c-1:rw \
+    --device /dev/spidev0.0:rw \
+    --device /dev/spidev0.1:rw \
+    --device /dev/vchiq:r \
+    --name 'pet-base-'$ROS_DISTRO'_container' \
+    kullken/ros2_arm64v8:pet-base-$ROS_DISTRO

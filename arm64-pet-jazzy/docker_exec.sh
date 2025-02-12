@@ -1,5 +1,5 @@
 #!/bin/bash
-# Start new bash/terminal in existing custom Docker Container.
+# Start new bash/terminal in existing custom Docker 'Base' Image.
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.
@@ -17,7 +17,7 @@
 #  - https://hub.docker.com/repositories/kullken
 #  - https://hub.docker.com/repository/docker/kullken/ros2_arm64v8
 #  - https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-#
+
 docker exec \
     --interactive \
     --tty \
