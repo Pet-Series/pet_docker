@@ -1,15 +1,11 @@
 # This is an ./Dockerfile for my custom Docker 'Base' Image
 #   Level 1) Docker 'Source' Image
-#            1.1 FROM ubuntu:noble
+#            1.1 FROM arm64v8/ubuntu:noble
 #            1.2 FROM arm64v8/ros:jazzy-ros-base-noble
 #   Level 2) Docker 'Base' Image     
 #            2.0 This Image = kullken/ros2_arm64v8:pet-base-jazzy
 #   Level 3) Docker 'Overlay' Image
 #            3.0 n/a 
-# This is an ./Dockerfile for my custom Docker 'Base' Image
-#   Level 0) Docker 'Source' Image   = arm64v8/ros:jazzy-ros-base-noble
-#   Level 1) Docker 'Base' Image     = kullken/ros2_arm64v8:pet-base-jazzy <-This Image
-#   Level 3) Docker 'Overlay' Image  = n/a 
 # 
 # Description:
 #   Target hardware platform: Any Raspberry PI3..5[arm64v8].
@@ -100,6 +96,7 @@ RUN echo "${DOCKERUSER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${DOCKERUSER} 
 # Install 'gpiod' GPIO-nice-to-have-tool, including '$ gpioinfo'
 # Install 'net-tool' LAN-nice-to-have-tool, including '$ ifconfig'
 # Install 'libraspberrypi-bin' tool view VideoCore GPU information on the Raspberry Pi, including '$ vcgencmd'
+# Install fancy 'Neofetch' to generate login banner
 USER root
 RUN apt-get update -y &&\
     apt-get install -y \
@@ -109,7 +106,7 @@ RUN apt-get update -y &&\
         gpiod &&\
     apt-get install -y \
         neofetch &&\
-        echo '# Launch "neofetch" in each terminal' >> /home/pet/.bashrc &&\
+        echo '# Launch "neofetch" in each terminal' >> ${HOMEDIR}/.bashrc &&\
         echo 'neofetch' >> /home/pet/.bashrc &&\
     rm -rf /var/lib/apt/lists/*
 
