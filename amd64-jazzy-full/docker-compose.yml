@@ -1,4 +1,4 @@
-# ROS2 Developing conatiner that share /home/$USER/ws_ros2/*.* with docker-host filesystem.
+# ROS2 Developing container that share /home/$USER/ws_ros2/*.* with docker-host filesystem.
 #
 # 1a) Create/Start Container from Image : 
 #     $ docker compose up --detach
@@ -9,41 +9,57 @@
 #     $ docker exec -it jazzy-full-container bash
 #
 # 3)  Stop your services once you've finished with them
-#     $ docker conpose pause / unpause
+#     $ docker compose pause / unpause
 #     $ docker compose stop / start
 #     $ docker compose down    (stop & remove)
 #
+# Prerequisite - On docker host: 
+#   I) PC(amd64) with Ubuntu & Docker installed.
+#
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
 #
-# "jazzy" = ROS2 24.04
-# "noble" = Ubuntu 24.04
+#  - "kullken"      = DockerWeb User
+#  - "ros2_amd64"   = DockerWeb Repository
+#  - "jazzy-full"   = DockerWeb Tag
 #
-# More info: https://github.com/Pet-Series/pet_docker
-# More info: https://hub.docker.com/repositories/kullken
+#  - ROS2 version: ROS2/Jazzy Jalisco(amd64/PC)
+#  - OS version:   Ubuntu 24.04/noble(amd64/PC)
+#
+# More info: 
+#  - https://github.com/Pet-Series/pet_docker
+#  - https://hub.docker.com/repositories/kullken
+#  - https://hub.docker.com/repository/docker/kullken/ros2_amd64
+#  - https://hub.docker.com/repository/docker/kullken/ros2_amd64/tags?name=jazzy
+#  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
 services:
   ros2:
-    build: ./
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        ROS_DISTRO: jazzy
+        GZ_VERSION: harmonic
     image: kullken/ros2_amd64:jazzy-full
-    # Use/Reuse the same container name all the time
-    container_name: jazzy-full-container
+    container_name: jazzy-full-container  # Use/Reuse the same container name all the time
     network_mode: host
     environment:
-      # Pass truth the $DISPLAY value to the container - Enable docker GUI-applications to access docker-host xhost screen. 
-      - DISPLAY=${DISPLAY}
-      # Other $ env to set/passtruth to the container 
-      - KALLE=ANKA  
+      - PYTHONUNBUFFERED=1      # important to show error messages if a ros service crashes!
+      - DISPLAY=${DISPLAY}      # Enable docker GUI-applications to access docker-host xhost screen. 
+      - XAUTHORITY=$XAUTHORITY  # Enable docker GUI-applications to access docker-host xhost screen. 
+      - QT_X11_NO_MITSHM=1      # fix some QT bugs
+      - KALLE=ANKA              # Example of a custom environment variable
     volumes:
-      # Sync docker date, timezone with docker-host 
-      - /etc/localtime:/etc/localtime:ro
-      # Enable docker GUI-applications to access docker-host xhost screen.  
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # Mount the ROS2 Workspace directory from docker-host file system
-      - /home/$USER/ws_ros2:/home/ubuntu/ws_ros2:rw
+      - /etc/localtime:/etc/localtime:ro            # Sync docker date, timezone with docker-host 
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw            # Enable docker GUI-applications to access docker-host xhost screen.
+      - /run/user:/run/user:ro                      # Enable docker GUI-applications to access docker-host xhost screen.
+      - /home/$USER/ws_ros2_jazzy:/home/ubuntu/ws_ros2_host:rw # Mount the ROS2 Workspace directory from docker-host file system
       #??- /home/ubuntu/.ros/:/root/.ros/
     devices:
-      - /dev/video0:/dev/video0     # USB/Web camera on my computer
+      - /dev/video0:/dev/video0:ro   # USB/Web camera on my computer
+      - /dev/dri:/dev/dri:rw         # Intel UHD GPU device
+      #- /dev/dxg             # Intel UHD GPU device
     stdin_open: true # docker run -i
     tty: true        # docker run -t

@@ -1,8 +1,5 @@
 #!/bin/bash
 # Run existing Docker Image and create + start a Docker Container
-# - AMD64/x86 CPU Architecture
-# - ROS Version: ROS2 20.24   LTS (AMD64) aka."jazzy"
-# - OS version : Ubuntu 24.04 LTS (AMD64) aka."noble"
 #  - Source Image = osrf/ros:jazzy-desktop-full
 #  - Target Container = jazzy-full-container
 #
@@ -14,7 +11,7 @@
 #     To ensure that the host and container have the same time zone
 #  4) Mount local docker host </tmp/.X11-unix>
 #     To enable GUI/X11 applications inside container
-#     Needs to be combined with exporting '$DISPLAY' and running '$ xhost local:docker' before starting the conatiner.
+#     Needs to be combined with exporting '$DISPLAY' and running '$ xhost local:docker' before starting the container.
 #
 # --------A few other commands that may be useful to know.... 
 # docker exec -it jazzy-full-container bash
@@ -26,11 +23,24 @@
 # docker container prune 
 #----------------------
 # Maintainer: stefan.kull@gmail.com
-# Licens: MIT
+# License: MIT
 # https://github.com/Pet-Series
-#----------------------
-# More info: https://github.com/Pet-Series/pet_docker
-# More info: https://hub.docker.com/repositories/kullken
+#
+#  - "kullken"      = DockerWeb User/Account
+#  - "ros2_amd64"   = DockerWeb Repository
+#  - "jazzy-full"   = DockerWeb Tag
+#  - "kullken/ros2_amd64:jazzy-full" = Full Docker Image Name
+#  - "jazzy-full-container"          = Local Docker Container Name
+#
+#  - ROS2 version: ROS2/Jazzy Jalisco(amd64/PC)
+#  - OS version:   Ubuntu 24.04/noble(amd64/PC)
+#
+# More info: 
+#  - https://github.com/Pet-Series/pet_docker
+#  - https://hub.docker.com/repositories/kullken
+#  - https://hub.docker.com/repository/docker/kullken/ros2_amd64
+#  - https://hub.docker.com/repository/docker/kullken/ros2_amd64/tags?name=jazzy
+#  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
 xhost local:docker
 docker run \
   -it \

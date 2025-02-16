@@ -1,6 +1,10 @@
 #!/bin/bash
 # Build Docker Image from ./Dockerfile  in the same directory.
-# Loggfile created with name 'docker_build.log' in the same directory.
+# (Logfile created with name 'docker_build.log' in the same directory)
+#
+# "kullken" = DockerWeb User
+# "ros2_arm64v8" = DockerWeb Repository
+# "pet-base-jazzy" = DockerWeb Tag
 #
 # Prerequisite - On docker host: 
 #   I) Raspberry Pi(arm64v8) with Ubuntu & Docker installed.  
