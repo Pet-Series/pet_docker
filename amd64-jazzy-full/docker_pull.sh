@@ -21,5 +21,5 @@
 
 ROS_DISTRO=jazzy
 # docker pull ubuntu:noble
-docker pull osrf/ros:$ROS_DISTRO-desktop-full
-docker pull kullken/ros2_amd64:$ROS_DISTRO-full
+docker pull osrf/ros:$ROS_DISTRO-desktop-full     # Docker 'Source' Image
+docker pull kullken/ros2_amd64:$ROS_DISTRO-full   # Custom Docker 'Base' Image

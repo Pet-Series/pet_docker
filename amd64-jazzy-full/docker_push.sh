@@ -1,5 +1,5 @@
 #!/bin/bash
-# Push local Docker Image to DockerHub repository.
+# Push local/new custom base layer Image to DockerHub repository.
 # 
 # Prerequisite:
 #   $ docker login -u "kullken" -p "@@@@@@@@" docker.io

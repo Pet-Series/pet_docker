@@ -56,12 +56,14 @@ SHELL ["/bin/bash", "-c"]
 
 # Update existing user 'ubuntu' 
 # - Set password... To avoid mistakes :)
-# - Add user to 'render' group
-# - Add user to 'video' group
+# - Add user to 'render' group GUD:992  <= Needed for GUI access/'Graphics stuff' from inside the container to access docker-host xhost/X11 screen.
+# - Add user to 'video' group  GID:44   <= Needed for GUI access/'Graphics stuff' from inside the container to access docker-host xhost/X11 screen.
 USER root
-RUN  echo "${DOCKERUSER}:D0cker" | chpasswd
-RUN  sudo usermod -aG render sk &&\
-     sudo usermod -aG video  sk
+RUN echo "${DOCKERUSER}:D0cker" | chpasswd
+RUN groupadd --force --gid 992 render &&\
+     groupadd --force --gid 44 video &&\
+     sudo usermod -aG render ${DOCKERUSER} &&\
+     sudo usermod -aG video  ${DOCKERUSER}
 
 # Upgrade all packages
 USER root

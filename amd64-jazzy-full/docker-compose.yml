@@ -58,8 +58,9 @@ services:
       - /home/$USER/ws_ros2_jazzy:/home/ubuntu/ws_ros2_host:rw # Mount the ROS2 Workspace directory from docker-host file system
       #??- /home/ubuntu/.ros/:/root/.ros/
     devices:
-      - /dev/video0:/dev/video0:ro   # USB/Web camera on my computer
-      - /dev/dri:/dev/dri:rw         # Intel UHD GPU device
+      - /dev/video0:/dev/video0:ro  # USB/Web camera on my computer
+      - /dev/input:/dev/input:ro    # Mouse, Gamepad etc. on my computer
+      - /dev/dri:/dev/dri:rw        # Intel UHD GPU device
       #- /dev/dxg             # Intel UHD GPU device
     stdin_open: true # docker run -i
     tty: true        # docker run -t
