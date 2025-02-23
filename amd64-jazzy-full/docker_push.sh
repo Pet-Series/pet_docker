@@ -23,4 +23,6 @@
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64/tags?name=jazzy
 #  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
-docker push kullken/ros2_amd64:jazzy-full
+
+ROS_DISTRO=jazzy
+docker push kullken/ros2_amd64:$ROS_DISTRO-full

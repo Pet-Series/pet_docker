@@ -41,6 +41,8 @@
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64/tags?name=jazzy
 #  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
+
+ROS_DISTRO=jazzy
 xhost local:docker
 docker run \
   -it \
@@ -49,6 +51,6 @@ docker run \
   --env HOSTUSER=$USER \
   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
   --volume="/etc/localtime:/etc/localtime:ro" \
-  --volume="/home/$USER/ws_ros2:/home/ubuntu/ws_ros2:rw" \
+  --volume="/home/$USER/ws_ros2/$ROS_DISTRO:/home/ubuntu/ws_ros2/$ROS_DISTRO:rw" \
   --network=host \
-  kullken/ros2_amd64:jazzy-full
+  kullken/ros2_amd64:$ROS_DISTRO-full

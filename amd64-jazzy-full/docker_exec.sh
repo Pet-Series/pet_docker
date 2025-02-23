@@ -24,10 +24,12 @@
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64
 #  - https://hub.docker.com/repository/docker/kullken/ros2_amd64/tags?name=jazzy
 #  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
+
+ROS_DISTRO=jazzy
 xhost local:docker
 docker exec \
     --interactive \
     --tty \
     --env HOSTUSER=$USER \
-    jazzy-full-container \
+    $ROS_DISTRO-full-container \
     bash
