@@ -1,7 +1,7 @@
 # Docker specifications supporting the Pet-Series of robots.
-This repo hosts Dockerfiles and scaffolding for images in the Pet-Series oarganisation.
+This repo hosts Dockerfile's and scaffolding for images in the Pet-Series organisation.
 Docker specifications supporting Pet-Series and ROS1/ROS2 middleware.
-* Docker images for ARM4 = Raspberry Pi running 64bit Ubuntu
+* Docker images for ARM4 = Raspberry Pi3-4-5 running 64bit Ubuntu
 * Docker images for AMD64/X86 = PC running 64bit Ubuntu
 
 # GitHub Links
@@ -11,10 +11,10 @@ Docker specifications supporting Pet-Series and ROS1/ROS2 middleware.
   * **Target architecture:** ARM64 (aka."Raspberry Pi 3-4-5")
   * **Operating system:** Ubuntu
   * **Middleware:** Robot Operating System 2 (ROS2)
-* https://hub.docker.com/repository/docker/kullken/ros2_arm64v8* 
-  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
-  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
-  * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
+  * https://hub.docker.com/repository/docker/kullken/ros2_arm64v8* 
+    * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=jazzy
+    * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=humble
+    * Based on: https://hub.docker.com/r/arm64v8/ros/tags?page=1&name=galactic
 
 # Docker for Robot Operating System 2 (ROS2) - Offboard
   * **Target architecture:** AMD64/x86 (aka."PC", aka. "Workstation")
@@ -23,16 +23,16 @@ Docker specifications supporting Pet-Series and ROS1/ROS2 middleware.
     * Developing & Running ROS2 applications
     * Running simulation in ROS2
     * Developing & uploading firmware to microcontrollers using micro-ROS
-* https://hub.docker.com/r/osrf/ros/tags?name=jazzy
-* https://hub.docker.com/repository/docker/kullken/ros2_amd64
+  * https://hub.docker.com/r/osrf/ros/tags?name=jazzy
+  * https://hub.docker.com/repository/docker/kullken/ros2_amd64
 
 # DockerHub links for amd64 (aka "PC", aka. "Workstation")
  * **Target architecture:**  AMD64/x86 (aka."PC", aka. "Workstation")
   * **Operating system:** Ubuntu
-  * **Middleware:** Robot Operating System 1 (ROS1)
+  * **Middleware:** Robot Operating System 1 (ROS1/Noetic)
     * Developing & Running ROS1 applications
     * Running simulation in ROS1 using GAZEBO.
-* https://hub.docker.com/repository/docker/kullken/ros1_amd64
-* https://hub.docker.com/r/osrf/ros/tags?page=1&name=noetic
+  * https://hub.docker.com/repository/docker/kullken/ros1_amd64
+  * https://hub.docker.com/r/osrf/ros/tags?page=1&name=noetic
 
 
