@@ -23,3 +23,4 @@
 #  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
 xhost local:docker
 docker compose up --detach
+# docker compose up --detach --build

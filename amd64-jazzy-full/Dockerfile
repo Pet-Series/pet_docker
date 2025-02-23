@@ -54,28 +54,44 @@ LABEL version="1.1"
 
 SHELL ["/bin/bash", "-c"]
 
-# Update existing user 'ubuntu' 
+# Update existing user 'ubuntu' and make sure that the groups are set correctly.
 # - Set password... To avoid mistakes :)
-# - Add user to 'render' group GUD:992  <= Needed for GUI access/'Graphics stuff' from inside the container to access docker-host xhost/X11 screen.
-# - Add user to 'video' group  GID:44   <= Needed for GUI access/'Graphics stuff' from inside the container to access docker-host xhost/X11 screen.
+# - Add user to 'adm'     group GID:4   <= Needed for 'log' access
+# - Add user to 'dailout' group GID:20  <= Needed for 'modem' and 'tty' access
+# - Add user to 'audio'   group GID:29  <= Needed direct I/O access of 'microphone' & 'speaker' from inside the container.
+# - Add user to 'video'   group GID:44  <= Needed for GUI access 'Graphics stuff' from inside the container to access docker-host xhost/X11 screen & Webcam etc.
+# - Add user to 'render'  group GUD:992 <= Needed for GUI access 'Graphics stuff' from inside the container to access docker-host xhost/X11 screen.
+# - Add user to 'input'   group GID:995 <= Needed direct I/O access of 'Joystick' from inside the container.
+
 USER root
 RUN echo "${DOCKERUSER}:D0cker" | chpasswd
-RUN groupadd --force --gid 992 render &&\
-     groupadd --force --gid 44 video &&\
-     sudo usermod -aG render ${DOCKERUSER} &&\
-     sudo usermod -aG video  ${DOCKERUSER}
+
+RUN  groupadd --force --gid  20 dailout &&\
+     groupadd --force --gid  44 video &&\
+     groupadd --force --gid 992 render &&\
+     groupadd --force --gid 995 input &&\
+     usermod -aG adm     ${DOCKERUSER} &&\
+     usermod -aG dailout ${DOCKERUSER} &&\
+     usermod -aG audio   ${DOCKERUSER} &&\
+     usermod -aG video   ${DOCKERUSER} &&\
+     usermod -aG plugdev ${DOCKERUSER} &&\
+     usermod -aG render  ${DOCKERUSER} &&\
+     usermod -aG input   ${DOCKERUSER}
 
 # Upgrade all packages
 USER root
 RUN  apt-get -y update &&\
      apt-get -y upgrade &&\
      apt-get -y autoremove &&\
-     rm -rf /var/lib/apt/lists/*  
+     rm -rf /var/lib/apt/lists/*
      # Or 'apt-get clean'
      # Or 'apt-get autoclean'
 
 # Install 'neofetch' generate fancy login banner
-# Install 'nano' minimal editor 
+# Install 'nano' minimal editor
+# Install 'gedit' graphical editor
+# Install 'htop'  process viewer
+# Install 'wget'  download manager
 USER root
 RUN  apt-get -y update &&\
      apt-get -y install neofetch &&\
@@ -88,22 +104,25 @@ RUN  apt-get -y update &&\
      # Or 'apt-get clean'
      # Or 'apt-get autoclean'
 
-# Install 'ros2 Gazebo stuff' 
+# Install 'ros2 gz(Gazebo) & rqt stuff and rqt plugins'
 USER root
 RUN  apt-get -y update &&\
      apt-get -y install ros-${ROS_DISTRO}-ros2-controllers &&\
      apt-get -y install ros-${ROS_DISTRO}-ros2-control &&\
+     apt-get -y install ros-${ROS_DISTRO}-gz-ros2-control &&\
      apt-get -y install ros-${ROS_DISTRO}-ros-gz &&\
      apt-get -y install ros-${ROS_DISTRO}-ros-gz-bridge &&\
      apt-get -y install ros-${ROS_DISTRO}-joint-state-publisher &&\
      apt-get -y install ros-${ROS_DISTRO}-robot-state-publisher &&\
      apt-get -y install ros-${ROS_DISTRO}-xacro &&\
      apt-get -y install ros-${ROS_DISTRO}-joy &&\
+     apt-get -y install '~nros-${ROS_DISTRO}-rqt*' &&\
      apt-get -y autoremove &&\
      rm -rf /var/lib/apt/lists/*
      # Or 'apt-get clean'
      # Or 'apt-get autoclean'
 
+# <<<<< Start: This will most likely go into a separate Docker Layer >>>>>
 # Install 'Graphics stuff'
 # - Intel Graphics Compute Runtime for OpenCL
 # - Intel Graphics Stack
@@ -111,9 +130,9 @@ RUN  apt-get -y update &&\
 # - Mesa-utils (glxinfo and glxgears)
 USER root
 RUN  wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | \
-          sudo gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg &&\
+          gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg &&\
      echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu noble unified" | \
-          sudo tee /etc/apt/sources.list.d/intel-gpu-noble.list&&\
+          tee /etc/apt/sources.list.d/intel-gpu-noble.list&&\
      apt-get -y update &&\
      apt-get -y upgrade &&\
      apt-get -y install libze-intel-gpu1 libze1 intel-opencl-icd clinfo intel-gsc &&\
@@ -124,6 +143,23 @@ RUN  wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | \
      rm -rf /var/lib/apt/lists/*
      # Or 'apt-get clean'
      # Or 'apt-get autoclean'
+# <<<<< End: This will most likely go into a separate Docker Layer >>>>>
+
+# <<<<< Start: This will most likely go into a separate Docker Layer >>>>>
+# Install 'Joystick/Xbox stuff' & 'USB stuff'
+# - usbutils:   $ lsusb + $ lsusb --tree + lsusb -D /dev/bus/usb/001/126   # List USB devices
+# - udev:       $ udevadm info -a -n /dev/input/js0  + $ udevadm monitor --udev # Monitor udev/usb events
+# - jstest-gtk: Joystick tester via GUI
+# - xxd:        $ xxd /dev/input/mouse4 # Hexdump
+USER root
+RUN  apt-get -y update &&\
+     apt-get -y install usbutils &&\
+     apt-get -y install udev &&\
+     apt-get -y install jstest-gtk &&\
+     apt-get -y install xxd &&\
+     apt-get -y autoremove &&\
+     rm -rf /var/lib/apt/lists/*
+# <<<<< End: This will most likely go into a separate Docker Layer >>>>>
 
 # Created '~/.sudo_as_admin_successful' so I do not get the annoying messages 'To run a command as administrator...'
 USER ${DOCKERUSER}
@@ -138,7 +174,7 @@ RUN  echo '# Setting up my own fancy Terminal Prompt :-)'                     >>
      echo '# Setting up alias for sourcing ROS2'                              >> ${HOMEDIR}/.bashrc &&\
      echo "alias ${ROS_DISTRO}='source /opt/ros/${ROS_DISTRO}/setup.bash'"    >> ${HOMEDIR}/.bashrc &&\
      echo "alias pet_source='source ${ROS_WSDIR}/install/setup.bash'"         >> ${HOMEDIR}/.bashrc &&\
-     echo "alias build='cd ${ROS_WSDIR} && colcon build --symlink-install'"   >> ${HOMEDIR}/.bashrc &&\
+     echo "alias build='cd ${ROS_WSDIR} && colcon build --symlink-install' && 'source ${ROS_WSDIR}/install/setup.bash'"   >> ${HOMEDIR}/.bashrc &&\
      echo '# Launch "neofetch" in each terminal'                              >> ${HOMEDIR}/.bashrc &&\
      echo 'neofetch'                                                          >> ${HOMEDIR}/.bashrc 
 

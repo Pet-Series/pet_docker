@@ -45,22 +45,24 @@ services:
     image: kullken/ros2_amd64:jazzy-full
     container_name: jazzy-full-container  # Use/Reuse the same container name all the time
     network_mode: host
+    
     environment:
       - PYTHONUNBUFFERED=1      # important to show error messages if a ros service crashes!
       - DISPLAY=${DISPLAY}      # Enable docker GUI-applications to access docker-host xhost screen. 
       - XAUTHORITY=$XAUTHORITY  # Enable docker GUI-applications to access docker-host xhost screen. 
       - QT_X11_NO_MITSHM=1      # fix some QT bugs
       - KALLE=ANKA              # Example of a custom environment variable
+
     volumes:
       - /etc/localtime:/etc/localtime:ro            # Sync docker date, timezone with docker-host 
       - /tmp/.X11-unix:/tmp/.X11-unix:rw            # Enable docker GUI-applications to access docker-host xhost screen.
       - /run/user:/run/user:ro                      # Enable docker GUI-applications to access docker-host xhost screen.
-      - /home/$USER/ws_ros2_jazzy:/home/ubuntu/ws_ros2_host:rw # Mount the ROS2 Workspace directory from docker-host file system
-      #??- /home/ubuntu/.ros/:/root/.ros/
+      - /home/$USER/ws_ros2_jazzy:/home/ubuntu/ws_ros2_jazzy:rw           # Mount the ROS2 Workspace directory from docker-host file system
+      - /home/$USER/ws_ros2_jazzy_pico:/home/ubuntu/ws_ros2_jazzy_pico:rw # Mount the ROS2 Workspace directory from docker-host file system
+
     devices:
       - /dev/video0:/dev/video0:ro  # USB/Web camera on my computer
       - /dev/input:/dev/input:ro    # Mouse, Gamepad etc. on my computer
       - /dev/dri:/dev/dri:rw        # Intel UHD GPU device
-      #- /dev/dxg             # Intel UHD GPU device
     stdin_open: true # docker run -i
     tty: true        # docker run -t
