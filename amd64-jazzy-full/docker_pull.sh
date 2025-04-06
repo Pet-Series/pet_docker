@@ -20,6 +20,8 @@
 #  - https://hub.docker.com/r/osrf/ros/tags?page=1&name=jazzy
 
 ROS_DISTRO=jazzy
-# docker pull ubuntu:noble
-docker pull osrf/ros:$ROS_DISTRO-desktop-full     # Docker 'Source' Image
-docker pull kullken/ros2_amd64:$ROS_DISTRO-full   # Custom Docker 'Base' Image
+docker pull ubuntu:noble
+docker pull osrf/ros:${ROS_DISTRO}-desktop
+docker pull osrf/ros:${ROS_DISTRO}-desktop-full
+docker pull osrf/ros:${ROS_DISTRO}-desktop-full-noble  # Docker 'Source' Image
+docker pull kullken/ros2_amd64:$ROS_DISTRO-full        # Custom Docker 'Base' Image
