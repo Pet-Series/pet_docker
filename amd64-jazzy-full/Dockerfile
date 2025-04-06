@@ -174,7 +174,7 @@ RUN  echo '# Setting up my own fancy Terminal Prompt :-)'                     >>
      echo '# Setting up alias for sourcing ROS2'                              >> ${HOMEDIR}/.bashrc &&\
      echo "alias ${ROS_DISTRO}='source /opt/ros/${ROS_DISTRO}/setup.bash'"    >> ${HOMEDIR}/.bashrc &&\
      echo "alias pet_source='source ${ROS_WSDIR}/install/setup.bash'"         >> ${HOMEDIR}/.bashrc &&\
-     echo "alias build='cd ${ROS_WSDIR} && colcon build --symlink-install' && 'source ${ROS_WSDIR}/install/setup.bash'"   >> ${HOMEDIR}/.bashrc &&\
+     echo "alias build='cd ${ROS_WSDIR}/ && colcon build --symlink-install && source ${ROS_WSDIR}/install/setup.bash'"  >> ${HOMEDIR}/.bashrc &&\
      echo '# Launch "neofetch" in each terminal'                              >> ${HOMEDIR}/.bashrc &&\
      echo 'neofetch'                                                          >> ${HOMEDIR}/.bashrc 
 
